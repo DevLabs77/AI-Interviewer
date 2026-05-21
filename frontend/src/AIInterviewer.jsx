@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import axios from "axios";
 
 /* ─── Google Fonts ─── */
 const injectFonts = () => {
@@ -37,9 +38,9 @@ const LANGUAGES = [
 const VOICES = [
   { value: "neural-f", label: "Neural Female — Aria" },
   { value: "neural-m", label: "Neural Male — Orion" },
-  { value: "deep",     label: "Deep Resonant — Vega" },
-  { value: "crisp",    label: "Crisp Clarity — Nova" },
-  { value: "warm",     label: "Warm Natural — Luna" },
+  { value: "deep", label: "Deep Resonant — Vega" },
+  { value: "crisp", label: "Crisp Clarity — Nova" },
+  { value: "warm", label: "Warm Natural — Luna" },
 ];
 
 /* ─── Styles ─── */
@@ -545,14 +546,14 @@ const css = `
 function LogoMark() {
   return (
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <rect width="32" height="32" rx="9" fill="rgba(10,132,255,0.15)" stroke="rgba(10,132,255,0.3)" strokeWidth="1"/>
-      <circle cx="16" cy="16" r="7" fill="none" stroke="rgba(100,210,255,0.7)" strokeWidth="1.5"/>
-      <circle cx="16" cy="16" r="3.5" fill="rgba(10,132,255,0.6)"/>
-      <circle cx="16" cy="16" r="1.5" fill="white"/>
-      <line x1="16" y1="6" x2="16" y2="9" stroke="rgba(100,210,255,0.5)" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="16" y1="23" x2="16" y2="26" stroke="rgba(100,210,255,0.5)" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="6" y1="16" x2="9" y2="16" stroke="rgba(100,210,255,0.5)" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="23" y1="16" x2="26" y2="16" stroke="rgba(100,210,255,0.5)" strokeWidth="1.5" strokeLinecap="round"/>
+      <rect width="32" height="32" rx="9" fill="rgba(10,132,255,0.15)" stroke="rgba(10,132,255,0.3)" strokeWidth="1" />
+      <circle cx="16" cy="16" r="7" fill="none" stroke="rgba(100,210,255,0.7)" strokeWidth="1.5" />
+      <circle cx="16" cy="16" r="3.5" fill="rgba(10,132,255,0.6)" />
+      <circle cx="16" cy="16" r="1.5" fill="white" />
+      <line x1="16" y1="6" x2="16" y2="9" stroke="rgba(100,210,255,0.5)" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="16" y1="23" x2="16" y2="26" stroke="rgba(100,210,255,0.5)" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="6" y1="16" x2="9" y2="16" stroke="rgba(100,210,255,0.5)" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="23" y1="16" x2="26" y2="16" stroke="rgba(100,210,255,0.5)" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }
@@ -568,64 +569,64 @@ function AIFace({ blink, camOn, speakerOn, micOn, amplitude }) {
     <svg width="120" height="120" viewBox="0 0 120 120">
       {/* Head */}
       <ellipse cx="60" cy="56" rx="31" ry="34"
-        fill="rgba(10,132,255,0.04)" stroke="rgba(100,210,255,0.55)" strokeWidth="1.2"/>
+        fill="rgba(10,132,255,0.04)" stroke="rgba(100,210,255,0.55)" strokeWidth="1.2" />
       {/* Eye sockets */}
-      <ellipse cx="47" cy="50" rx="6.5" ry="5.5" fill="rgba(10,132,255,0.1)" stroke="rgba(100,210,255,0.4)" strokeWidth="0.8"/>
-      <ellipse cx="73" cy="50" rx="6.5" ry="5.5" fill="rgba(10,132,255,0.1)" stroke="rgba(100,210,255,0.4)" strokeWidth="0.8"/>
+      <ellipse cx="47" cy="50" rx="6.5" ry="5.5" fill="rgba(10,132,255,0.1)" stroke="rgba(100,210,255,0.4)" strokeWidth="0.8" />
+      <ellipse cx="73" cy="50" rx="6.5" ry="5.5" fill="rgba(10,132,255,0.1)" stroke="rgba(100,210,255,0.4)" strokeWidth="0.8" />
 
       {eyesClosed ? (
         <>
-          <line x1="42" y1="50" x2="52" y2="50" stroke="rgba(100,210,255,0.7)" strokeWidth="1.5" strokeLinecap="round"/>
-          <line x1="68" y1="50" x2="78" y2="50" stroke="rgba(100,210,255,0.7)" strokeWidth="1.5" strokeLinecap="round"/>
+          <line x1="42" y1="50" x2="52" y2="50" stroke="rgba(100,210,255,0.7)" strokeWidth="1.5" strokeLinecap="round" />
+          <line x1="68" y1="50" x2="78" y2="50" stroke="rgba(100,210,255,0.7)" strokeWidth="1.5" strokeLinecap="round" />
         </>
       ) : (
         <>
-          <ellipse cx="47" cy="50" rx="2.8" ry={blink ? 0.3 : 2.8} fill="rgba(100,210,255,0.9)"/>
-          <ellipse cx="73" cy="50" rx="2.8" ry={blink ? 0.3 : 2.8} fill="rgba(100,210,255,0.9)"/>
-          <circle cx="48.2" cy="48.8" r="1" fill="white" opacity="0.6"/>
-          <circle cx="74.2" cy="48.8" r="1" fill="white" opacity="0.6"/>
+          <ellipse cx="47" cy="50" rx="2.8" ry={blink ? 0.3 : 2.8} fill="rgba(100,210,255,0.9)" />
+          <ellipse cx="73" cy="50" rx="2.8" ry={blink ? 0.3 : 2.8} fill="rgba(100,210,255,0.9)" />
+          <circle cx="48.2" cy="48.8" r="1" fill="white" opacity="0.6" />
+          <circle cx="74.2" cy="48.8" r="1" fill="white" opacity="0.6" />
           {/* Iris glow */}
-          <ellipse cx="47" cy="50" rx="4" ry="3.8" fill="none" stroke="rgba(10,132,255,0.25)" strokeWidth="0.8"/>
-          <ellipse cx="73" cy="50" rx="4" ry="3.8" fill="none" stroke="rgba(10,132,255,0.25)" strokeWidth="0.8"/>
+          <ellipse cx="47" cy="50" rx="4" ry="3.8" fill="none" stroke="rgba(10,132,255,0.25)" strokeWidth="0.8" />
+          <ellipse cx="73" cy="50" rx="4" ry="3.8" fill="none" stroke="rgba(10,132,255,0.25)" strokeWidth="0.8" />
         </>
       )}
 
       {/* Nose */}
-      <path d="M58 54 L60 60 L62 54" fill="none" stroke="rgba(100,210,255,0.3)" strokeWidth="0.8"/>
+      <path d="M58 54 L60 60 L62 54" fill="none" stroke="rgba(100,210,255,0.3)" strokeWidth="0.8" />
 
       {/* Mouth */}
       {mouthMuted ? (
         <>
-          <line x1="50" y1="68" x2="70" y2="68" stroke="rgba(255,69,58,0.75)" strokeWidth="1.5" strokeLinecap="round"/>
-          <line x1="55" y1="63" x2="60" y2="68" stroke="rgba(255,69,58,0.5)" strokeWidth="1" strokeLinecap="round"/>
-          <line x1="65" y1="63" x2="60" y2="68" stroke="rgba(255,69,58,0.5)" strokeWidth="1" strokeLinecap="round"/>
+          <line x1="50" y1="68" x2="70" y2="68" stroke="rgba(255,69,58,0.75)" strokeWidth="1.5" strokeLinecap="round" />
+          <line x1="55" y1="63" x2="60" y2="68" stroke="rgba(255,69,58,0.5)" strokeWidth="1" strokeLinecap="round" />
+          <line x1="65" y1="63" x2="60" y2="68" stroke="rgba(255,69,58,0.5)" strokeWidth="1" strokeLinecap="round" />
         </>
       ) : mouthOpen > 0.5 ? (
         <>
           <path d={`M50 68 Q60 ${68 + mouthOpen} 70 68`}
-            fill={`rgba(10,132,255,${0.06 + amplitude*0.12})`}
-            stroke="rgba(100,210,255,0.7)" strokeWidth="1.2"/>
-          <path d={`M52 68 Q60 ${68 - mouthOpen*0.3} 68 68`}
-            fill="none" stroke="rgba(100,210,255,0.2)" strokeWidth="0.5"/>
+            fill={`rgba(10,132,255,${0.06 + amplitude * 0.12})`}
+            stroke="rgba(100,210,255,0.7)" strokeWidth="1.2" />
+          <path d={`M52 68 Q60 ${68 - mouthOpen * 0.3} 68 68`}
+            fill="none" stroke="rgba(100,210,255,0.2)" strokeWidth="0.5" />
         </>
       ) : (
-        <path d="M50 68 Q60 74 70 68" fill="none" stroke="rgba(100,210,255,0.6)" strokeWidth="1.2"/>
+        <path d="M50 68 Q60 74 70 68" fill="none" stroke="rgba(100,210,255,0.6)" strokeWidth="1.2" />
       )}
 
       {/* Ears — hidden when mic muted */}
       {!earsHidden && (
         <>
-          <line x1="29" y1="56" x2="21" y2="56" stroke="rgba(100,210,255,0.25)" strokeWidth="0.8"/>
-          <line x1="21" y1="56" x2="21" y2="70" stroke="rgba(100,210,255,0.25)" strokeWidth="0.8"/>
-          <line x1="91" y1="56" x2="99" y2="56" stroke="rgba(100,210,255,0.25)" strokeWidth="0.8"/>
-          <line x1="99" y1="56" x2="99" y2="70" stroke="rgba(100,210,255,0.25)" strokeWidth="0.8"/>
+          <line x1="29" y1="56" x2="21" y2="56" stroke="rgba(100,210,255,0.25)" strokeWidth="0.8" />
+          <line x1="21" y1="56" x2="21" y2="70" stroke="rgba(100,210,255,0.25)" strokeWidth="0.8" />
+          <line x1="91" y1="56" x2="99" y2="56" stroke="rgba(100,210,255,0.25)" strokeWidth="0.8" />
+          <line x1="99" y1="56" x2="99" y2="70" stroke="rgba(100,210,255,0.25)" strokeWidth="0.8" />
         </>
       )}
 
       {/* Neck */}
-      <line x1="54" y1="90" x2="54" y2="104" stroke="rgba(100,210,255,0.3)" strokeWidth="1"/>
-      <line x1="66" y1="90" x2="66" y2="104" stroke="rgba(100,210,255,0.3)" strokeWidth="1"/>
-      <path d="M45 104 Q60 99 75 104" fill="none" stroke="rgba(100,210,255,0.2)" strokeWidth="0.8"/>
+      <line x1="54" y1="90" x2="54" y2="104" stroke="rgba(100,210,255,0.3)" strokeWidth="1" />
+      <line x1="66" y1="90" x2="66" y2="104" stroke="rgba(100,210,255,0.3)" strokeWidth="1" />
+      <path d="M45 104 Q60 99 75 104" fill="none" stroke="rgba(100,210,255,0.2)" strokeWidth="0.8" />
     </svg>
   );
 }
@@ -633,8 +634,8 @@ function AIFace({ blink, camOn, speakerOn, micOn, amplitude }) {
 /* iOS-style Toggle */
 function IOSToggle({ on, onClick }) {
   return (
-    <div className={`ios-toggle-track${on?" on":""}`} onClick={onClick}>
-      <div className="ios-toggle-thumb"/>
+    <div className={`ios-toggle-track${on ? " on" : ""}`} onClick={onClick}>
+      <div className="ios-toggle-thumb" />
     </div>
   );
 }
@@ -643,38 +644,43 @@ function IOSToggle({ on, onClick }) {
 export default function AIInterviewer() {
   useEffect(() => { injectFonts(); }, []);
 
-  const [menuOpen, setMenuOpen]   = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [activeNav, setActiveNav] = useState("home");
   const [activeTab, setActiveTab] = useState("transcript");
   const [interviewActive, setInterviewActive] = useState(false);
-  const [micOn, setMicOn]         = useState(true);
-  const [camOn, setCamOn]         = useState(true);
+  const [micOn, setMicOn] = useState(true);
+  const [camOn, setCamOn] = useState(true);
   const [aiVoiceOn, setAiVoiceOn] = useState(true);
   const [speakerOn, setSpeakerOn] = useState(true);
-  const [language, setLanguage]   = useState("en");
-  const [voice, setVoice]         = useState("neural-f");
-  const [currentQ, setCurrentQ]   = useState(0);
+  const [language, setLanguage] = useState("en");
+  const [voice, setVoice] = useState("neural-f");
+  const [currentQ, setCurrentQ] = useState(0);
   const [transcript, setTranscript] = useState([
-    { who:"ai", text:"Welcome to Nexus AI Interview System. I am your AI interviewer. When ready, press Start Interview to begin." }
+    {
+      who: "ai",
+      text: "Welcome to Nexus AI Interview System."
+    }
   ]);
-  const [seconds, setSeconds]     = useState(0);
-  const [blink, setBlink]         = useState(false);
+
+  const [userAnswer, setUserAnswer] = useState("");
+  const [seconds, setSeconds] = useState(0);
+  const [blink, setBlink] = useState(false);
   const [voiceBars, setVoiceBars] = useState(Array(16).fill(4));
   const [amplitude, setAmplitude] = useState(0);
   const [isTalking, setIsTalking] = useState(false);
-  const [stats, setStats]         = useState({ conf:"—", clar:"—", pace:"—", perf:0 });
-  const [aiStatus, setAiStatus]   = useState("Ready to begin");
+  const [stats, setStats] = useState({ conf: "—", clar: "—", pace: "—", perf: 0 });
+  const [aiStatus, setAiStatus] = useState("Ready to begin");
 
-  const timerRef  = useRef(null);
-  const voiceRef  = useRef(null);
-  const blinkRef  = useRef(null);
-  const ampRef    = useRef(null);
-  const panelRef  = useRef(null);
+  const timerRef = useRef(null);
+  const voiceRef = useRef(null);
+  const blinkRef = useRef(null);
+  const ampRef = useRef(null);
+  const panelRef = useRef(null);
   const queuedRef = useRef(null);
 
   useEffect(() => {
     if (interviewActive) {
-      timerRef.current = setInterval(() => setSeconds(s => s+1), 1000);
+      timerRef.current = setInterval(() => setSeconds(s => s + 1), 1000);
     } else clearInterval(timerRef.current);
     return () => clearInterval(timerRef.current);
   }, [interviewActive]);
@@ -684,13 +690,13 @@ export default function AIInterviewer() {
       voiceRef.current = setInterval(() => {
         const a = Math.random() * 0.7 + 0.3;
         setAmplitude(a);
-        setVoiceBars(Array(16).fill(0).map(() => Math.random()*42+4));
+        setVoiceBars(Array(16).fill(0).map(() => Math.random() * 42 + 4));
       }, 90);
     } else {
       clearInterval(voiceRef.current);
       setVoiceBars(Array(16).fill(4));
       ampRef.current = setInterval(() => {
-        setAmplitude(prev => { if(prev<=0.02){clearInterval(ampRef.current);return 0;} return prev*0.75; });
+        setAmplitude(prev => { if (prev <= 0.02) { clearInterval(ampRef.current); return 0; } return prev * 0.75; });
       }, 60);
     }
     return () => { clearInterval(voiceRef.current); clearInterval(ampRef.current); };
@@ -708,28 +714,183 @@ export default function AIInterviewer() {
     if (panelRef.current) panelRef.current.scrollTop = 99999;
   }, [transcript]);
 
-  const addMsg = useCallback((who, text) => setTranscript(p => [...p,{who,text}]), []);
+  const addMsg = useCallback((who, text) => setTranscript(p => [...p, { who, text }]), []);
 
-  const askQuestion = useCallback((idx) => {
-    if (idx >= QUESTIONS.length) return;
-    setCurrentQ(idx+1);
-    setIsTalking(true);
-    setAiStatus("Speaking...");
-    addMsg("ai", QUESTIONS[idx]);
-    const dur = 2800 + Math.random()*1200;
-    queuedRef.current = setTimeout(() => {
+  const askQuestion = useCallback(async () => {
+
+    try {
+
+      setAiStatus("Generating AI Question...");
+      setIsTalking(true);
+
+      // Backend API
+      const response = await axios.get(
+        "http://127.0.0.1:8000/interview/ai-question"
+      );
+
+      const aiQuestion = response.data.question;
+
+      // Add AI Question
+      addMsg("ai", aiQuestion);
+
+      setCurrentQ(prev => prev + 1);
+
+      // =========================
+      // AI Voice
+      // =========================
+
+      const speech = new SpeechSynthesisUtterance(aiQuestion);
+
+      speech.lang =
+        language === "hi"
+          ? "hi-IN"
+          : "en-US";
+
+      speech.rate = 1;
+      speech.pitch = 1;
+
+      // =========================
+      // AFTER AI FINISHES TALKING
+      // =========================
+
+      speech.onend = () => {
+
+        setIsTalking(false);
+        setAiStatus("Listening...");
+
+        // Mic Off
+        if (!micOn) {
+
+          setAiStatus("Microphone muted");
+
+          return;
+        }
+
+        // Browser Support
+        const SpeechRecognition =
+          window.SpeechRecognition ||
+          window.webkitSpeechRecognition;
+
+        if (!SpeechRecognition) {
+
+          addMsg(
+            "ai",
+            "Speech Recognition not supported in this browser."
+          );
+
+          return;
+        }
+
+        // Create Recognition
+        const recognition = new SpeechRecognition();
+
+        recognition.lang =
+          language === "hi"
+            ? "hi-IN"
+            : "en-US";
+
+        recognition.continuous = true;
+        recognition.interimResults = true;
+
+        // Start Mic
+        recognition.start();
+
+        // =========================
+        // USER ANSWER
+        // =========================
+
+        recognition.onresult = (event) => {
+
+          let finalTranscript = "";
+
+          for (
+            let i = event.resultIndex;
+            i < event.results.length;
+            i++
+          ) {
+
+            finalTranscript +=
+              event.results[i][0].transcript;
+          }
+
+          // Save Answer
+          setUserAnswer(finalTranscript);
+
+          // Update Transcript
+          setTranscript(prev => {
+
+            const updated = [...prev];
+
+            // Replace last user message if exists
+            if (
+              updated.length > 0 &&
+              updated[updated.length - 1].who === "user"
+            ) {
+
+              updated[updated.length - 1].text =
+                finalTranscript;
+
+            } else {
+
+              updated.push({
+                who: "user",
+                text: finalTranscript
+              });
+            }
+
+            return updated;
+          });
+
+          setAiStatus("Listening...");
+        };
+
+        // =========================
+        // ERROR
+        // =========================
+
+        recognition.onerror = (event) => {
+
+          console.error(event.error);
+
+          setAiStatus("Mic error");
+
+          addMsg(
+            "ai",
+            `Mic Error: ${event.error}`
+          );
+        };
+      };
+
+      // Start AI Voice
+      window.speechSynthesis.speak(speech);
+
+    } catch (error) {
+
+      console.error("API Error:", error);
+
+      setAiStatus("Failed to load AI question");
+
       setIsTalking(false);
-      setAiStatus("Listening...");
-      setTimeout(() => addMsg("user","[User response being recorded...]"), 1200);
-    }, dur);
-  }, [addMsg]);
+
+      addMsg(
+        "ai",
+        "Backend connection failed."
+      );
+    }
+
+  }, [
+    addMsg,
+    micOn,
+    language,
+    interviewActive
+  ]);
 
   const startInterview = useCallback(() => {
     setInterviewActive(true);
     setCurrentQ(0);
     setSeconds(0);
     setAiStatus("Initializing...");
-    setTimeout(() => askQuestion(0), 800);
+    setTimeout(() => askQuestion(), 800);
   }, [askQuestion]);
 
   const stopInterview = useCallback(() => {
@@ -737,22 +898,22 @@ export default function AIInterviewer() {
     setInterviewActive(false);
     setIsTalking(false);
     setAiStatus("Session ended");
-    addMsg("ai","Thank you for completing the interview. Your results will be analyzed and sent shortly.");
+    addMsg("ai", "Thank you for completing the interview. Your results will be analyzed and sent shortly.");
     setStats({
-      conf: Math.floor(Math.random()*30+60)+"%",
-      clar: Math.floor(Math.random()*25+65)+"%",
-      pace: Math.floor(Math.random()*20+70)+"%",
-      perf: Math.floor(Math.random()*30+60),
+      conf: Math.floor(Math.random() * 30 + 60) + "%",
+      clar: Math.floor(Math.random() * 25 + 65) + "%",
+      pace: Math.floor(Math.random() * 20 + 70) + "%",
+      perf: Math.floor(Math.random() * 30 + 60),
     });
   }, [addMsg]);
 
   const handleStartToggle = () => interviewActive ? stopInterview() : startInterview();
   const formatTime = (s) =>
-    `${String(Math.floor(s/3600)).padStart(2,"0")}:${String(Math.floor((s%3600)/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
+    `${String(Math.floor(s / 3600)).padStart(2, "0")}:${String(Math.floor((s % 3600) / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 
-  const sessionMinSec = `${String(Math.floor((seconds%3600)/60)).padStart(2,"0")}:${String(seconds%60).padStart(2,"0")}`;
-  const langLabel  = LANGUAGES.find(l=>l.value===language)?.label.replace(/^\S+\s/,"") || "English";
-  const voiceLabel = VOICES.find(v=>v.value===voice)?.label || "Neural Female — Aria";
+  const sessionMinSec = `${String(Math.floor((seconds % 3600) / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+  const langLabel = LANGUAGES.find(l => l.value === language)?.label.replace(/^\S+\s/, "") || "English";
+  const voiceLabel = VOICES.find(v => v.value === voice)?.label || "Neural Female — Aria";
 
   const statusClass = isTalking ? "active" : interviewActive ? "listening" : "";
 
@@ -762,29 +923,29 @@ export default function AIInterviewer() {
 
       {/* Background */}
       <div className="ios-bg">
-        <div className="ios-blob b1"/><div className="ios-blob b2"/><div className="ios-blob b3"/>
+        <div className="ios-blob b1" /><div className="ios-blob b2" /><div className="ios-blob b3" />
       </div>
 
       {/* Overlay */}
-      <div className={`ios-overlay${menuOpen?" open":""}`} onClick={() => setMenuOpen(false)}/>
+      <div className={`ios-overlay${menuOpen ? " open" : ""}`} onClick={() => setMenuOpen(false)} />
 
       {/* ── SIDE SHEET ── */}
-      <div className={`ios-sheet${menuOpen?" open":""}`}>
+      <div className={`ios-sheet${menuOpen ? " open" : ""}`}>
 
         {/* Navigation */}
         <div className="ios-sheet-section">
           <div className="ios-sheet-label">Navigation</div>
           <div className="ios-sheet-group">
             {[
-              {id:"home",      icon:<><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></>,  label:"Home"},
-              {id:"interview", icon:<><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0112 0v1"/></>,                                      label:"Interview"},
-              {id:"results",   icon:<polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>,                                                          label:"Results"},
-              {id:"profile",   icon:<><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></>,                      label:"Profile"},
+              { id: "home", icon: <><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" /><polyline points="9,22 9,12 15,12 15,22" /></>, label: "Home" },
+              { id: "interview", icon: <><circle cx="12" cy="8" r="4" /><path d="M6 20v-1a6 6 0 0112 0v1" /></>, label: "Interview" },
+              { id: "results", icon: <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />, label: "Results" },
+              { id: "profile", icon: <><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" /></>, label: "Profile" },
             ].map(n => (
-              <div key={n.id} className={`ios-sheet-row${activeNav===n.id?" active":""}`} onClick={() => { setActiveNav(n.id); setMenuOpen(false); }}>
+              <div key={n.id} className={`ios-sheet-row${activeNav === n.id ? " active" : ""}`} onClick={() => { setActiveNav(n.id); setMenuOpen(false); }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">{n.icon}</svg>
                 {n.label}
-                <svg className="ios-row-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+                <svg className="ios-row-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
               </div>
             ))}
           </div>
@@ -795,13 +956,13 @@ export default function AIInterviewer() {
           <div className="ios-sheet-label">Controls</div>
           <div className="ios-sheet-group">
             {[
-              {label:"Microphone",  on:micOn,       toggle:()=>setMicOn(v=>!v)},
-              {label:"Camera",      on:camOn,       toggle:()=>setCamOn(v=>!v)},
-              {label:"AI Voice",    on:aiVoiceOn,   toggle:()=>setAiVoiceOn(v=>!v)},
+              { label: "Microphone", on: micOn, toggle: () => setMicOn(v => !v) },
+              { label: "Camera", on: camOn, toggle: () => setCamOn(v => !v) },
+              { label: "AI Voice", on: aiVoiceOn, toggle: () => setAiVoiceOn(v => !v) },
             ].map(r => (
               <div key={r.label} className="ios-toggle-row">
                 <span className="ios-toggle-label">{r.label}</span>
-                <IOSToggle on={r.on} onClick={r.toggle}/>
+                <IOSToggle on={r.on} onClick={r.toggle} />
               </div>
             ))}
           </div>
@@ -810,16 +971,16 @@ export default function AIInterviewer() {
         {/* Language */}
         <div className="ios-sheet-section">
           <div className="ios-sheet-label">Language</div>
-          <select className="ios-select" value={language} onChange={e=>setLanguage(e.target.value)}>
-            {LANGUAGES.map(l=><option key={l.value} value={l.value}>{l.label}</option>)}
+          <select className="ios-select" value={language} onChange={e => setLanguage(e.target.value)}>
+            {LANGUAGES.map(l => <option key={l.value} value={l.value}>{l.label}</option>)}
           </select>
         </div>
 
         {/* Voice */}
         <div className="ios-sheet-section">
           <div className="ios-sheet-label">AI Voice Type</div>
-          <select className="ios-select" value={voice} onChange={e=>setVoice(e.target.value)}>
-            {VOICES.map(v=><option key={v.value} value={v.value}>{v.label}</option>)}
+          <select className="ios-select" value={voice} onChange={e => setVoice(e.target.value)}>
+            {VOICES.map(v => <option key={v.value} value={v.value}>{v.label}</option>)}
           </select>
         </div>
 
@@ -827,21 +988,21 @@ export default function AIInterviewer() {
         <div className="ios-sheet-section">
           <div className="ios-sheet-label">Account</div>
           <div className="ios-sheet-group">
-            <div className="ios-sheet-row" onClick={()=>{alert("Connect to your backend!");setMenuOpen(false);}}>
+            <div className="ios-sheet-row" onClick={() => { alert("Connect to your backend!"); setMenuOpen(false); }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-                <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/>
-                <polyline points="10,17 15,12 10,7"/><line x1="15" y1="12" x2="3" y2="12"/>
+                <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" />
+                <polyline points="10,17 15,12 10,7" /><line x1="15" y1="12" x2="3" y2="12" />
               </svg>
               Log In / Sign Up
-              <svg className="ios-row-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+              <svg className="ios-row-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
             </div>
-            <div className="ios-sheet-row" onClick={()=>setMenuOpen(false)}>
+            <div className="ios-sheet-row" onClick={() => setMenuOpen(false)}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-                <circle cx="12" cy="12" r="3"/>
-                <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14" />
               </svg>
               Settings
-              <svg className="ios-row-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+              <svg className="ios-row-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
             </div>
           </div>
         </div>
@@ -853,7 +1014,7 @@ export default function AIInterviewer() {
         {/* HEADER */}
         <header className="ios-header">
           <div className="ios-logo">
-            <LogoMark/>
+            <LogoMark />
             <div>
               <div className="ios-logo-name">Nexus AI</div>
               <div className="ios-logo-sub">Interview System</div>
@@ -861,15 +1022,15 @@ export default function AIInterviewer() {
           </div>
 
           <div className="ios-hdr-pill">
-            <div className="ios-dot"/>
+            <div className="ios-dot" />
             <span>System Online</span>
           </div>
 
           <div className="ios-hdr-right">
-            <button className="ios-btn" onClick={()=>alert("Login — connect to backend!")}>Log In</button>
-            <button className="ios-btn primary" onClick={()=>alert("Sign Up — connect to backend!")}>Sign Up</button>
-            <button className={`ios-menu-btn${menuOpen?" open":""}`} onClick={()=>setMenuOpen(v=>!v)}>
-              <span/><span/><span/>
+            <button className="ios-btn" onClick={() => alert("Login — connect to backend!")}>Log In</button>
+            <button className="ios-btn primary" onClick={() => alert("Sign Up — connect to backend!")}>Sign Up</button>
+            <button className={`ios-menu-btn${menuOpen ? " open" : ""}`} onClick={() => setMenuOpen(v => !v)}>
+              <span /><span /><span />
             </button>
           </div>
         </header>
@@ -882,17 +1043,17 @@ export default function AIInterviewer() {
 
             {/* Avatar */}
             <div className="ios-avatar-wrap">
-              <div className="ios-orbit r3"><div className="ios-orbit-dot"/></div>
-              <div className="ios-orbit r2"><div className="ios-orbit-dot"/></div>
-              <div className="ios-orbit r1"><div className="ios-orbit-dot"/></div>
+              <div className="ios-orbit r3"><div className="ios-orbit-dot" /></div>
+              <div className="ios-orbit r2"><div className="ios-orbit-dot" /></div>
+              <div className="ios-orbit r1"><div className="ios-orbit-dot" /></div>
 
-              <div className={`ios-pulse${isTalking?" active":""}`} style={{position:"absolute"}}/>
-              <div className={`ios-pulse${isTalking?" active":""}`} style={{position:"absolute"}}/>
-              <div className={`ios-pulse${isTalking?" active":""}`} style={{position:"absolute"}}/>
+              <div className={`ios-pulse${isTalking ? " active" : ""}`} style={{ position: "absolute" }} />
+              <div className={`ios-pulse${isTalking ? " active" : ""}`} style={{ position: "absolute" }} />
+              <div className={`ios-pulse${isTalking ? " active" : ""}`} style={{ position: "absolute" }} />
 
-              <div className={`ios-talk-ring${isTalking?" active":""}`} style={{position:"absolute"}}/>
+              <div className={`ios-talk-ring${isTalking ? " active" : ""}`} style={{ position: "absolute" }} />
 
-              <div className={`ios-avatar-glass${isTalking?" talking":""}`} style={{position:"relative"}}>
+              <div className={`ios-avatar-glass${isTalking ? " talking" : ""}`} style={{ position: "relative" }}>
                 <div className="ios-avatar-inner">
                   <AIFace
                     blink={blink} camOn={camOn}
@@ -901,8 +1062,8 @@ export default function AIInterviewer() {
                   />
                   {interviewActive && (
                     <div className="ios-voice-vis">
-                      {voiceBars.map((h,i) => (
-                        <div key={i} className="ios-v-bar" style={{height: isTalking ? h : 4}}/>
+                      {voiceBars.map((h, i) => (
+                        <div key={i} className="ios-v-bar" style={{ height: isTalking ? h : 4 }} />
                       ))}
                     </div>
                   )}
@@ -911,18 +1072,18 @@ export default function AIInterviewer() {
             </div>
 
             {/* Name + Status */}
-            <div style={{textAlign:"center"}}>
+            <div style={{ textAlign: "center" }}>
               <div className="ios-ai-name">Nexus — AI Interviewer</div>
               <div className={`ios-ai-status ${statusClass}`}>{aiStatus}</div>
             </div>
 
             {/* Start Button */}
-            <button className={`ios-start-btn${interviewActive?" active":""}`} onClick={handleStartToggle}>
+            <button className={`ios-start-btn${interviewActive ? " active" : ""}`} onClick={handleStartToggle}>
               <div className="ios-start-inner">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   {interviewActive
-                    ? <rect x="4" y="4" width="16" height="16" rx="3" fill="rgba(255,69,58,0.3)" stroke="rgba(255,120,110,0.9)" strokeWidth="1.8"/>
-                    : <polygon points="5,3 19,12 5,21" fill="rgba(10,132,255,0.35)" stroke="rgba(100,180,255,0.9)" strokeWidth="1.8"/>
+                    ? <rect x="4" y="4" width="16" height="16" rx="3" fill="rgba(255,69,58,0.3)" stroke="rgba(255,120,110,0.9)" strokeWidth="1.8" />
+                    : <polygon points="5,3 19,12 5,21" fill="rgba(10,132,255,0.35)" stroke="rgba(100,180,255,0.9)" strokeWidth="1.8" />
                   }
                 </svg>
                 <span className="ios-start-text">{interviewActive ? "End Session" : "Start Interview"}</span>
@@ -933,53 +1094,53 @@ export default function AIInterviewer() {
             <div className="ios-controls">
               {/* Mic */}
               <div className="ios-ctrl-item">
-                <div className={`ios-ctrl-btn${!micOn?" off":""}`} onClick={()=>setMicOn(v=>!v)}>
+                <div className={`ios-ctrl-btn${!micOn ? " off" : ""}`} onClick={() => setMicOn(v => !v)}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
                     {micOn ? <>
-                      <rect x="9" y="2" width="6" height="11" rx="3"/>
-                      <path d="M19 10a7 7 0 01-14 0"/>
-                      <line x1="12" y1="17" x2="12" y2="21"/>
-                      <line x1="8" y1="21" x2="16" y2="21"/>
+                      <rect x="9" y="2" width="6" height="11" rx="3" />
+                      <path d="M19 10a7 7 0 01-14 0" />
+                      <line x1="12" y1="17" x2="12" y2="21" />
+                      <line x1="8" y1="21" x2="16" y2="21" />
                     </> : <>
-                      <line x1="1" y1="1" x2="23" y2="23" strokeLinecap="round"/>
-                      <path d="M9 9v3a3 3 0 005.12 2.12M15 9.34V4a3 3 0 00-5.94-.6"/>
+                      <line x1="1" y1="1" x2="23" y2="23" strokeLinecap="round" />
+                      <path d="M9 9v3a3 3 0 005.12 2.12M15 9.34V4a3 3 0 00-5.94-.6" />
                     </>}
                   </svg>
                 </div>
-                <div className={`ios-ctrl-label${!micOn?" off":""}`}>{micOn?"Mic":"Muted"}</div>
+                <div className={`ios-ctrl-label${!micOn ? " off" : ""}`}>{micOn ? "Mic" : "Muted"}</div>
               </div>
 
               {/* Cam */}
               <div className="ios-ctrl-item">
-                <div className={`ios-ctrl-btn${!camOn?" off":""}`} onClick={()=>setCamOn(v=>!v)}>
+                <div className={`ios-ctrl-btn${!camOn ? " off" : ""}`} onClick={() => setCamOn(v => !v)}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
                     {camOn ? <>
-                      <path d="M23 7l-7 5 7 5V7z"/>
-                      <rect x="1" y="5" width="15" height="14" rx="2"/>
+                      <path d="M23 7l-7 5 7 5V7z" />
+                      <rect x="1" y="5" width="15" height="14" rx="2" />
                     </> : <>
-                      <line x1="1" y1="1" x2="23" y2="23" strokeLinecap="round"/>
-                      <path d="M21 21H3a2 2 0 01-2-2V8a2 2 0 012-2h3m3-3h6l2 3h4a2 2 0 012 2v9.34m-7.72-2.06A4 4 0 1111.17 8"/>
+                      <line x1="1" y1="1" x2="23" y2="23" strokeLinecap="round" />
+                      <path d="M21 21H3a2 2 0 01-2-2V8a2 2 0 012-2h3m3-3h6l2 3h4a2 2 0 012 2v9.34m-7.72-2.06A4 4 0 1111.17 8" />
                     </>}
                   </svg>
                 </div>
-                <div className={`ios-ctrl-label${!camOn?" off":""}`}>{camOn?"Camera":"Off"}</div>
+                <div className={`ios-ctrl-label${!camOn ? " off" : ""}`}>{camOn ? "Camera" : "Off"}</div>
               </div>
 
               {/* Speaker */}
               <div className="ios-ctrl-item">
-                <div className={`ios-ctrl-btn${!speakerOn?" off":""}`} onClick={()=>setSpeakerOn(v=>!v)}>
+                <div className={`ios-ctrl-btn${!speakerOn ? " off" : ""}`} onClick={() => setSpeakerOn(v => !v)}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-                    <polygon points="11,5 6,9 2,9 2,15 6,15 11,19"/>
+                    <polygon points="11,5 6,9 2,9 2,15 6,15 11,19" />
                     {speakerOn ? <>
-                      <path d="M15.54 8.46a5 5 0 010 7.07"/>
-                      <path d="M19.07 4.93a10 10 0 010 14.14"/>
+                      <path d="M15.54 8.46a5 5 0 010 7.07" />
+                      <path d="M19.07 4.93a10 10 0 010 14.14" />
                     </> : <>
-                      <line x1="23" y1="9" x2="17" y2="15" strokeLinecap="round"/>
-                      <line x1="17" y1="9" x2="23" y2="15" strokeLinecap="round"/>
+                      <line x1="23" y1="9" x2="17" y2="15" strokeLinecap="round" />
+                      <line x1="17" y1="9" x2="23" y2="15" strokeLinecap="round" />
                     </>}
                   </svg>
                 </div>
-                <div className={`ios-ctrl-label${!speakerOn?" off":""}`}>{speakerOn?"Speaker":"Muted"}</div>
+                <div className={`ios-ctrl-label${!speakerOn ? " off" : ""}`}>{speakerOn ? "Speaker" : "Muted"}</div>
               </div>
             </div>
           </div>
@@ -987,36 +1148,36 @@ export default function AIInterviewer() {
           {/* RIGHT PANEL */}
           <div className="ios-right">
             <div className="ios-tabs">
-              {["transcript","stats","info"].map(t => (
-                <div key={t} className={`ios-tab${activeTab===t?" active":""}`} onClick={()=>setActiveTab(t)}>
-                  {t==="transcript"?"Transcript":t==="stats"?"Analytics":"Session"}
+              {["transcript", "stats", "info"].map(t => (
+                <div key={t} className={`ios-tab${activeTab === t ? " active" : ""}`} onClick={() => setActiveTab(t)}>
+                  {t === "transcript" ? "Transcript" : t === "stats" ? "Analytics" : "Session"}
                 </div>
               ))}
             </div>
 
             <div className="ios-panel-body" ref={panelRef}>
 
-              {activeTab==="transcript" && <>
-                {transcript.map((m,i) => (
+              {activeTab === "transcript" && <>
+                {transcript.map((m, i) => (
                   <div key={i} className="ios-msg">
-                    <div className={`ios-msg-who ${m.who}`}>{m.who==="ai"?"Nexus AI":"You"}</div>
+                    <div className={`ios-msg-who ${m.who}`}>{m.who === "ai" ? "Nexus AI" : "You"}</div>
                     <div className={`ios-msg-bubble ${m.who}`}>{m.text}</div>
                   </div>
                 ))}
                 {!interviewActive && (
                   <div className="ios-divider">
-                    {currentQ===0?"Waiting for session to start":"Session ended"}
+                    {currentQ === 0 ? "Waiting for session to start" : "Session ended"}
                   </div>
                 )}
               </>}
 
-              {activeTab==="stats" && <>
+              {activeTab === "stats" && <>
                 <div className="ios-stat-grid">
                   {[
-                    {val:stats.conf, lab:"Confidence"},
-                    {val:stats.clar, lab:"Clarity"},
-                    {val:stats.pace, lab:"Pace"},
-                    {val:`${currentQ}/${QUESTIONS.length}`, lab:"Questions"},
+                    { val: stats.conf, lab: "Confidence" },
+                    { val: stats.clar, lab: "Clarity" },
+                    { val: stats.pace, lab: "Pace" },
+                    { val: `${currentQ}/${QUESTIONS.length}`, lab: "Questions" },
                   ].map(s => (
                     <div key={s.lab} className="ios-stat-card">
                       <div className="ios-stat-val">{s.val}</div>
@@ -1026,30 +1187,30 @@ export default function AIInterviewer() {
                 </div>
                 <div className="ios-progress-wrap">
                   <div className="ios-progress-label">Performance Score</div>
-                  <div className="ios-progress-bar"><div className="ios-progress-fill" style={{width:stats.perf+"%"}}/></div>
+                  <div className="ios-progress-bar"><div className="ios-progress-fill" style={{ width: stats.perf + "%" }} /></div>
                   <div className="ios-progress-pct">{stats.perf}%</div>
                 </div>
-                <div className="ios-progress-label" style={{marginTop:18,marginBottom:10}}>Keywords Detected</div>
+                <div className="ios-progress-label" style={{ marginTop: 18, marginBottom: 10 }}>Keywords Detected</div>
                 <div className="ios-kw-wrap">
-                  {KEYWORDS.slice(0, Math.max(2, currentQ+1)).map(k => (
+                  {KEYWORDS.slice(0, Math.max(2, currentQ + 1)).map(k => (
                     <div key={k} className="ios-kw">{k}</div>
                   ))}
                 </div>
               </>}
 
-              {activeTab==="info" && <>
+              {activeTab === "info" && <>
                 {[
-                  ["Session ID","#NX-2024-0047"],
-                  ["Interview Type","Technical"],
-                  ["Difficulty","Advanced"],
-                  ["Language",langLabel],
-                  ["AI Voice",voiceLabel],
-                  ["Duration",sessionMinSec],
-                  ["Status", interviewActive?"Active":currentQ>0?"Ended":"Idle"],
-                ].map(([k,v]) => (
+                  ["Session ID", "#NX-2024-0047"],
+                  ["Interview Type", "Technical"],
+                  ["Difficulty", "Advanced"],
+                  ["Language", langLabel],
+                  ["AI Voice", voiceLabel],
+                  ["Duration", sessionMinSec],
+                  ["Status", interviewActive ? "Active" : currentQ > 0 ? "Ended" : "Idle"],
+                ].map(([k, v]) => (
                   <div key={k} className="ios-info-row">
                     <span className="ios-info-key">{k}</span>
-                    <span className="ios-info-val" style={k==="Difficulty"?{color:"#ff9f0a"}:{}}>{v}</span>
+                    <span className="ios-info-val" style={k === "Difficulty" ? { color: "#ff9f0a" } : {}}>{v}</span>
                   </div>
                 ))}
               </>}
