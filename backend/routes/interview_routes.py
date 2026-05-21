@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
+from services.ai_service import generate_question
 
 router = APIRouter(
     prefix="/interview",
@@ -47,11 +48,11 @@ def start_interview():
 
 
 # =========================
-# Next Question
+# Static Question
 # =========================
 
-@router.get("/next-question")
-def next_question():
+@router.get("/static-question")
+def static_question():
 
     global current_question_index
 
@@ -66,6 +67,20 @@ def next_question():
 
     return {
         "message": "No more questions"
+    }
+
+
+# =========================
+# AI Question
+# =========================
+
+@router.get("/ai-question")
+def ai_question():
+
+    question = generate_question()
+
+    return {
+        "question": question
     }
 
 
