@@ -1,13 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
-/* ─── Google Fonts injected once ─── */
+/* ─── Google Fonts ─── */
 const injectFonts = () => {
-  if (document.getElementById("nexus-fonts")) return;
+  if (document.getElementById("ios-fonts")) return;
   const link = document.createElement("link");
-  link.id = "nexus-fonts";
+  link.id = "ios-fonts";
   link.rel = "stylesheet";
-  link.href =
-    "https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600&family=Share+Tech+Mono&display=swap";
+  link.href = "https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap";
   document.head.appendChild(link);
 };
 
@@ -23,400 +22,624 @@ const QUESTIONS = [
   "Where do you see yourself in five years professionally?",
 ];
 
-const KEYWORDS = [
-  "React", "Python", "AI", "System Design",
-  "Agile", "Leadership", "Problem Solving", "Architecture",
-];
+const KEYWORDS = ["React", "Python", "AI", "System Design", "Agile", "Leadership", "Problem Solving", "Architecture"];
 
 const LANGUAGES = [
-  { value: "en", label: "🌐 ENGLISH" },
-  { value: "hi", label: "🇮🇳 HINDI" },
-  { value: "es", label: "🇪🇸 ESPAÑOL" },
-  { value: "fr", label: "🇫🇷 FRANÇAIS" },
-  { value: "de", label: "🇩🇪 DEUTSCH" },
-  { value: "ja", label: "🇯🇵 JAPANESE" },
-  { value: "zh", label: "🇨🇳 CHINESE" },
+  { value: "en", label: "🌐 English" },
+  { value: "hi", label: "🇮🇳 Hindi" },
+  { value: "es", label: "🇪🇸 Español" },
+  { value: "fr", label: "🇫🇷 Français" },
+  { value: "de", label: "🇩🇪 Deutsch" },
+  { value: "ja", label: "🇯🇵 Japanese" },
+  { value: "zh", label: "🇨🇳 Chinese" },
 ];
 
 const VOICES = [
-  { value: "neural-f", label: "NEURAL FEMALE — ARIA" },
-  { value: "neural-m", label: "NEURAL MALE — ORION" },
-  { value: "deep",     label: "DEEP RESONANT — VEGA" },
-  { value: "crisp",    label: "CRISP CLARITY — NOVA" },
-  { value: "warm",     label: "WARM NATURAL — LUNA" },
+  { value: "neural-f", label: "Neural Female — Aria" },
+  { value: "neural-m", label: "Neural Male — Orion" },
+  { value: "deep",     label: "Deep Resonant — Vega" },
+  { value: "crisp",    label: "Crisp Clarity — Nova" },
+  { value: "warm",     label: "Warm Natural — Luna" },
 ];
 
 /* ─── Styles ─── */
 const css = `
-  .nexus-root *{box-sizing:border-box;margin:0;padding:0;}
-  .nexus-root{
-    --neon:#00f5ff;--neon2:#7b2ff7;--neon3:#ff2d78;
-    --bg:#020510;--bg2:#060d1a;--bg3:#0a1428;
-    --panel:#0d1b33;--panel2:#111f3a;
-    --text:#e0f4ff;--muted:#4a7a9b;
-    --border:rgba(0,245,255,0.18);
-    --glow:0 0 20px rgba(0,245,255,0.3),0 0 40px rgba(0,245,255,0.1);
-    --font-head:'Orbitron',monospace;
-    --font-body:'Rajdhani',sans-serif;
-    --font-mono:'Share Tech Mono',monospace;
-    font-family:var(--font-body);
-    background:var(--bg);
-    color:var(--text);
-    height:100vh;width:100vw;
-    overflow:hidden;
-    position:relative;
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  .ios-root *, .ios-root *::before, .ios-root *::after {
+    box-sizing: border-box; margin: 0; padding: 0;
   }
 
-  /* BG GRID */
-  .nx-bg-grid{
-    position:fixed;inset:0;
-    background-image:
-      linear-gradient(rgba(0,245,255,0.03) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(0,245,255,0.03) 1px,transparent 1px);
-    background-size:60px 60px;
-    animation:gridPulse 8s ease-in-out infinite;
-    pointer-events:none;z-index:0;
+  .ios-root {
+    --blue:    #0a84ff;
+    --blue2:   #5e5ce6;
+    --green:   #30d158;
+    --red:     #ff453a;
+    --orange:  #ff9f0a;
+    --pink:    #ff375f;
+    --teal:    #64d2ff;
+    --bg-deep: #05080f;
+    --bg1:     #0a0f1e;
+    --bg2:     #0f1629;
+    --surface: rgba(255,255,255,0.055);
+    --surface2:rgba(255,255,255,0.085);
+    --surfaceH:rgba(255,255,255,0.11);
+    --border:  rgba(255,255,255,0.10);
+    --border2: rgba(255,255,255,0.16);
+    --text:    rgba(255,255,255,0.92);
+    --text2:   rgba(255,255,255,0.60);
+    --text3:   rgba(255,255,255,0.35);
+    --glass:   rgba(14,20,40,0.72);
+    --glass2:  rgba(10,15,30,0.85);
+    --blur:    blur(28px) saturate(180%);
+    --blur-sm: blur(16px) saturate(150%);
+    --radius:  20px;
+    --radius-sm:14px;
+    --radius-xs:10px;
+    --shadow:  0 8px 32px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.3);
+    --shadow-lg:0 20px 60px rgba(0,0,0,0.6), 0 4px 20px rgba(0,0,0,0.4);
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+
+    font-family: var(--font);
+    background: var(--bg-deep);
+    color: var(--text);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    position: relative;
   }
-  @keyframes gridPulse{0%,100%{opacity:.5}50%{opacity:1}}
-  .nx-scanlines{
-    position:fixed;inset:0;
-    background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.05) 2px,rgba(0,0,0,.05) 4px);
-    pointer-events:none;z-index:1;
+
+  /* ── BACKGROUND ── */
+  .ios-bg {
+    position: fixed; inset: 0; z-index: 0; overflow: hidden;
+    background: radial-gradient(ellipse 80% 60% at 20% 10%, rgba(10,132,255,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 80%, rgba(94,92,230,0.10) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 40% at 50% 40%, rgba(100,210,255,0.06) 0%, transparent 50%),
+                linear-gradient(160deg, #05080f 0%, #080d1c 50%, #060a18 100%);
   }
-  .nx-corner{display:none;}
-
-  /* LAYOUT */
-  .nx-app{position:relative;z-index:2;height:100vh;display:flex;flex-direction:column;}
-
-  /* HEADER */
-  .nx-header{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:14px 30px;
-    border-bottom:1px solid var(--border);
-    background:rgba(6,13,26,.95);
-    backdrop-filter:blur(20px);
-    position:relative;overflow:hidden;
+  .ios-blob {
+    position: absolute; border-radius: 50%; filter: blur(70px);
+    animation: blobFloat 12s ease-in-out infinite;
   }
-  .nx-header::after{
-    content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;
-    background:linear-gradient(90deg,transparent,var(--neon),transparent);
-    animation:scanH 3s linear infinite;
+  .ios-blob.b1 { width:500px;height:400px;top:-100px;left:-80px;background:radial-gradient(circle,rgba(10,132,255,0.18),transparent 70%);animation-duration:14s; }
+  .ios-blob.b2 { width:400px;height:350px;bottom:-80px;right:-60px;background:radial-gradient(circle,rgba(94,92,230,0.15),transparent 70%);animation-duration:18s;animation-delay:-6s; }
+  .ios-blob.b3 { width:300px;height:300px;top:40%;left:40%;background:radial-gradient(circle,rgba(100,210,255,0.08),transparent 70%);animation-duration:22s;animation-delay:-10s; }
+  @keyframes blobFloat {
+    0%,100%{transform:translate(0,0) scale(1);}
+    33%{transform:translate(30px,-20px) scale(1.05);}
+    66%{transform:translate(-20px,30px) scale(0.97);}
   }
-  @keyframes scanH{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 
-  .nx-logo{display:flex;align-items:center;gap:12px;}
-  .nx-logo-text{font-family:var(--font-head);font-size:18px;font-weight:700;letter-spacing:3px;background:linear-gradient(135deg,var(--neon),var(--neon2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-  .nx-logo-sub{font-size:10px;color:var(--muted);letter-spacing:4px;font-family:var(--font-mono);}
+  /* ── APP SHELL ── */
+  .ios-app { position:relative;z-index:2;height:100vh;display:flex;flex-direction:column; }
 
-  .nx-hdr-center{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--muted);}
-  .nx-status-dot{width:7px;height:7px;border-radius:50%;background:var(--neon);box-shadow:0 0 8px var(--neon);animation:statusBlink 1.5s ease-in-out infinite;}
-  @keyframes statusBlink{0%,100%{opacity:1}50%{opacity:.3}}
-
-  .nx-hdr-right{display:flex;align-items:center;gap:10px;}
-
-  /* BUTTONS — login and signup look identical, hover adds glow */
-  .nx-btn-ghost{
-    background:transparent;border:1px solid var(--border);color:var(--muted);
-    font-family:var(--font-body);font-size:13px;font-weight:500;
-    padding:7px 18px;cursor:pointer;letter-spacing:1px;transition:all .2s;
-    clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+  /* ── HEADER ── */
+  .ios-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 24px;
+    background: var(--glass2);
+    backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
+    border-bottom: 1px solid var(--border);
+    position: relative; z-index: 10;
   }
-  .nx-btn-ghost:hover{border-color:var(--neon);color:var(--neon);box-shadow:var(--glow);background:rgba(0,245,255,.05);}
-  .nx-btn-neon{
-    background:transparent;border:1px solid var(--border);color:var(--muted);
-    font-family:var(--font-body);font-size:13px;font-weight:500;
-    padding:7px 18px;cursor:pointer;letter-spacing:1px;transition:all .2s;
-    clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+  .ios-logo { display:flex;align-items:center;gap:11px; }
+  .ios-logo-name {
+    font-size: 17px; font-weight: 700; letter-spacing: -0.3px;
+    background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
-  .nx-btn-neon:hover{border-color:var(--neon);color:var(--neon);box-shadow:var(--glow);background:rgba(0,245,255,.05);}
+  .ios-logo-sub { font-size: 11px; color: var(--text3); font-weight: 400; letter-spacing: 0.2px; }
 
-  /* HAMBURGER */
-  .nx-hamburger{
-    width:36px;height:36px;border:1px solid var(--border);background:transparent;
-    cursor:pointer;display:flex;flex-direction:column;align-items:center;
-    justify-content:center;gap:5px;padding:0;transition:all .2s;
+  .ios-hdr-pill {
+    display: flex; align-items: center; gap: 7px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 14px;
+    backdrop-filter: var(--blur-sm);
+    -webkit-backdrop-filter: var(--blur-sm);
   }
-  .nx-hamburger:hover{border-color:var(--neon);box-shadow:var(--glow);}
-  .nx-hamburger span{width:18px;height:1.5px;background:var(--text);transition:all .3s;display:block;}
-  .nx-hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4.5px,4.5px);}
-  .nx-hamburger.open span:nth-child(2){opacity:0;}
-  .nx-hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4.5px,-4.5px);}
+  .ios-dot { width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:dotPulse 2s ease-in-out infinite; }
+  @keyframes dotPulse{0%,100%{opacity:1;box-shadow:0 0 8px var(--green);}50%{opacity:.6;box-shadow:0 0 4px var(--green);}}
+  .ios-hdr-pill span { font-size:12px;font-weight:500;color:var(--text2); }
 
-  /* SIDE MENU */
-  .nx-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:150;opacity:0;pointer-events:none;transition:opacity .3s;}
-  .nx-overlay.open{opacity:1;pointer-events:all;}
-  .nx-sidemenu{
-    position:fixed;top:0;right:0;bottom:0;width:300px;
-    background:rgba(6,13,26,.98);backdrop-filter:blur(30px);
-    border-left:1px solid var(--border);z-index:200;
-    transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);
-    padding:80px 0 30px;overflow-y:auto;
+  .ios-hdr-right { display:flex;align-items:center;gap:8px; }
+
+  /* iOS-style glass buttons */
+  .ios-btn {
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: -0.1px;
+    transition: all 0.18s cubic-bezier(0.4,0,0.2,1);
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    color: var(--text2);
+    backdrop-filter: var(--blur-sm);
+    -webkit-backdrop-filter: var(--blur-sm);
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
   }
-  .nx-sidemenu::before{content:'';position:absolute;top:0;left:-1px;bottom:0;width:1px;background:linear-gradient(180deg,transparent,var(--neon),var(--neon2),transparent);}
-  .nx-sidemenu.open{transform:translateX(0);}
-
-  .nx-menu-section{padding:0 24px 24px;}
-  .nx-menu-label{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:3px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
-  .nx-menu-item{
-    display:flex;align-items:center;gap:12px;padding:11px 14px;
-    cursor:pointer;border:1px solid transparent;transition:all .2s;margin-bottom:4px;
-    font-size:14px;font-weight:500;letter-spacing:1px;
-    clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);
+  .ios-btn:hover {
+    background: var(--surfaceH);
+    color: var(--text);
+    border-color: rgba(255,255,255,0.22);
+    transform: scale(1.02);
   }
-  .nx-menu-item:hover{border-color:var(--border);background:rgba(0,245,255,.05);color:var(--neon);}
-  .nx-menu-item.active{border-color:var(--neon);color:var(--neon);background:rgba(0,245,255,.08);}
-
-  .nx-menu-toggle{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;cursor:pointer;font-size:14px;font-weight:500;letter-spacing:1px;transition:all .2s;margin-bottom:4px;}
-  .nx-menu-toggle:hover{color:var(--neon);}
-  .nx-toggle-track{width:36px;height:18px;border:1px solid var(--muted);border-radius:9px;position:relative;transition:all .2s;flex-shrink:0;}
-  .nx-toggle-track.on{border-color:var(--neon);background:rgba(0,245,255,.15);}
-  .nx-toggle-thumb{width:12px;height:12px;border-radius:50%;background:var(--muted);position:absolute;top:2px;left:2px;transition:all .2s;}
-  .nx-toggle-track.on .nx-toggle-thumb{left:20px;background:var(--neon);box-shadow:0 0 6px var(--neon);}
-
-  .nx-select{
-    width:100%;background:var(--panel);border:1px solid var(--border);
-    color:var(--text);font-family:var(--font-body);font-size:13px;
-    padding:9px 12px;cursor:pointer;margin-bottom:8px;letter-spacing:1px;outline:none;
+  .ios-btn:active { transform: scale(0.97); opacity:0.85; }
+  .ios-btn.primary {
+    background: rgba(10,132,255,0.22);
+    border-color: rgba(10,132,255,0.4);
+    color: #64b5ff;
   }
-  .nx-select:focus{border-color:var(--neon);}
-
-  /* MAIN */
-  .nx-main{flex:1;display:grid;grid-template-columns:1fr 340px;overflow:hidden;}
-
-  /* CENTER */
-  .nx-center{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;gap:22px;position:relative;}
-
-  /* AVATAR */
-  .nx-avatar-wrap{position:relative;display:flex;align-items:center;justify-content:center;}
-  .nx-orbit{position:absolute;border-radius:50%;border:1px solid;animation:orbit 4s linear infinite;}
-  .nx-orbit.r1{width:220px;height:220px;border-color:rgba(0,245,255,.15);animation-duration:4s;}
-  .nx-orbit.r2{width:270px;height:270px;border-color:rgba(123,47,247,.1);animation-duration:7s;animation-direction:reverse;}
-  .nx-orbit.r3{width:320px;height:320px;border-color:rgba(0,245,255,.07);animation-duration:11s;}
-  @keyframes orbit{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-  .nx-orbit-dot{position:absolute;width:6px;height:6px;border-radius:50%;top:-3px;left:50%;transform:translateX(-50%);}
-  .nx-orbit.r1 .nx-orbit-dot{background:var(--neon);box-shadow:0 0 8px var(--neon);}
-  .nx-orbit.r2 .nx-orbit-dot{background:var(--neon2);box-shadow:0 0 8px var(--neon2);}
-
-  .nx-avatar-circle{
-    width:180px;height:180px;border-radius:50%;
-    background:radial-gradient(ellipse at center,rgba(0,245,255,.08) 0%,rgba(6,13,26,.9) 70%);
-    border:1px solid rgba(0,245,255,.25);
-    position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;
-    transition:border-color .3s, box-shadow .3s;
+  .ios-btn.primary:hover {
+    background: rgba(10,132,255,0.35);
+    border-color: rgba(10,132,255,0.6);
+    color: #90cbff;
+    box-shadow: 0 0 20px rgba(10,132,255,0.25);
   }
-  .nx-avatar-circle.talking{
-    border-color:rgba(0,245,255,.7);
-    box-shadow:0 0 30px rgba(0,245,255,.25),0 0 60px rgba(0,245,255,.1);
+
+  /* Hamburger */
+  .ios-menu-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    display: flex; flex-direction:column; align-items:center; justify-content:center; gap:4.5px;
+    cursor: pointer; transition: all .18s;
+    backdrop-filter: var(--blur-sm);
+    -webkit-backdrop-filter: var(--blur-sm);
   }
-  .nx-avatar-inner{width:160px;height:160px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-  .nx-avatar-corner{display:none;}
+  .ios-menu-btn:hover { background: var(--surfaceH); border-color:rgba(255,255,255,.22); }
+  .ios-menu-btn span { width:16px;height:1.5px;background:var(--text2);border-radius:2px;transition:all .25s; display:block; }
+  .ios-menu-btn.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px);}
+  .ios-menu-btn.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+  .ios-menu-btn.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px);}
 
-  /* PULSE — reacts to voice amplitude */
-  .nx-pulse{position:absolute;border-radius:50%;border:1px solid var(--neon);opacity:0;pointer-events:none;}
-  .nx-pulse.active{animation:pulseOut 1.6s ease-out infinite;}
-  .nx-pulse.active:nth-child(2){animation-delay:.4s;}
-  .nx-pulse.active:nth-child(3){animation-delay:.8s;}
-  @keyframes pulseOut{0%{width:160px;height:160px;opacity:.7}100%{width:260px;height:260px;opacity:0}}
+  /* ── SIDE SHEET ── */
+  .ios-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:150;opacity:0;pointer-events:none;transition:opacity .3s;}
+  .ios-overlay.open{opacity:1;pointer-events:all;}
+  .ios-sheet {
+    position:fixed;top:0;right:0;bottom:0;width:310px;
+    background: rgba(12,18,36,0.92);
+    backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
+    border-left: 1px solid var(--border2);
+    z-index:200;
+    transform:translateX(100%);
+    transition:transform .38s cubic-bezier(0.32,0,0.15,1);
+    overflow-y:auto;
+    padding: 72px 0 40px;
+  }
+  .ios-sheet.open{transform:translateX(0);}
+  .ios-sheet-section { padding: 0 20px 28px; }
+  .ios-sheet-label {
+    font-size: 11px; font-weight: 600; color: var(--text3);
+    letter-spacing: 0.8px; text-transform: uppercase;
+    margin-bottom: 10px; padding: 0 4px;
+  }
+  .ios-sheet-group {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .ios-sheet-row {
+    display:flex;align-items:center;gap:12px;
+    padding: 13px 16px;
+    cursor: pointer;
+    transition: background .15s;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px; font-weight: 450; color: var(--text);
+  }
+  .ios-sheet-row:last-child{border-bottom:none;}
+  .ios-sheet-row:hover{background:var(--surfaceH);}
+  .ios-sheet-row:active{background:rgba(255,255,255,.05);}
+  .ios-sheet-row.active { color: var(--blue); }
+  .ios-sheet-row svg { flex-shrink:0;opacity:.7; }
+  .ios-sheet-row.active svg { opacity:1; }
+  .ios-row-chevron { margin-left:auto;opacity:.3; }
 
-  /* TALKING RING — glows around avatar while AI speaks */
-  .nx-talk-ring{
+  /* iOS toggle */
+  .ios-toggle-row { display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border); }
+  .ios-toggle-row:last-child{border-bottom:none;}
+  .ios-toggle-label { font-size:15px;font-weight:450;color:var(--text); }
+  .ios-toggle-track {
+    width:44px;height:26px;border-radius:13px;
+    background: rgba(255,255,255,0.12);
+    border:1px solid var(--border2);
+    position:relative;cursor:pointer;
+    transition:background .22s, border-color .22s;
+    flex-shrink:0;
+  }
+  .ios-toggle-track.on{background:var(--green);border-color:var(--green);}
+  .ios-toggle-thumb {
+    width:20px;height:20px;border-radius:50%;
+    background:white;
+    box-shadow:0 2px 6px rgba(0,0,0,0.3);
+    position:absolute;top:2px;left:2px;
+    transition:transform .22s cubic-bezier(0.4,0,0.2,1);
+  }
+  .ios-toggle-track.on .ios-toggle-thumb{transform:translateX(18px);}
+
+  .ios-select {
+    width:100%;background:var(--surface);
+    border:1px solid var(--border);border-radius:var(--radius-xs);
+    color:var(--text);font-family:var(--font);font-size:14px;font-weight:400;
+    padding:11px 14px;cursor:pointer;outline:none;
+    -webkit-appearance:none;appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 12px center;
+    padding-right:36px;
+  }
+  .ios-select:focus{border-color:rgba(10,132,255,0.5);}
+
+  /* ── MAIN GRID ── */
+  .ios-main { flex:1;display:grid;grid-template-columns:1fr 340px;overflow:hidden; }
+
+  /* ── CENTER ── */
+  .ios-center {
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:28px 32px;gap:20px;position:relative;overflow:hidden;
+  }
+
+  /* ── AVATAR ── */
+  .ios-avatar-wrap { position:relative;display:flex;align-items:center;justify-content:center; }
+
+  /* Orbit rings */
+  .ios-orbit {
+    position:absolute;border-radius:50%;border:1px solid;
+    animation:iosOrbit linear infinite;
+  }
+  .ios-orbit.r1{width:230px;height:230px;border-color:rgba(10,132,255,0.12);animation-duration:8s;}
+  .ios-orbit.r2{width:285px;height:285px;border-color:rgba(94,92,230,0.08);animation-duration:13s;animation-direction:reverse;}
+  .ios-orbit.r3{width:340px;height:340px;border-color:rgba(100,210,255,0.05);animation-duration:20s;}
+  @keyframes iosOrbit{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  .ios-orbit-dot{position:absolute;border-radius:50%;top:-3px;left:50%;transform:translateX(-50%);}
+  .ios-orbit.r1 .ios-orbit-dot{width:6px;height:6px;background:var(--blue);box-shadow:0 0 10px var(--blue);}
+  .ios-orbit.r2 .ios-orbit-dot{width:5px;height:5px;background:var(--blue2);box-shadow:0 0 8px var(--blue2);}
+
+  /* Pulse rings */
+  .ios-pulse{position:absolute;border-radius:50%;border:1px solid var(--blue);opacity:0;pointer-events:none;}
+  .ios-pulse.active{animation:iosPulse 1.8s ease-out infinite;}
+  .ios-pulse.active:nth-child(5){animation-delay:.5s;}
+  .ios-pulse.active:nth-child(6){animation-delay:1s;}
+  @keyframes iosPulse{0%{width:170px;height:170px;opacity:.6}100%{width:280px;height:280px;opacity:0}}
+
+  /* Talk ring */
+  .ios-talk-ring {
     position:absolute;border-radius:50%;pointer-events:none;
-    width:186px;height:186px;
-    border:2px solid transparent;
-    transition:all .15s;
+    width:194px;height:194px;
+    border:2px solid transparent;transition:all .2s;
   }
-  .nx-talk-ring.active{
-    border-color:rgba(0,245,255,.6);
-    box-shadow:0 0 0 2px rgba(0,245,255,.15), 0 0 20px rgba(0,245,255,.3);
-    animation:ringPulse .6s ease-in-out infinite alternate;
+  .ios-talk-ring.active{
+    border-color:rgba(10,132,255,0.5);
+    box-shadow:0 0 0 3px rgba(10,132,255,0.1),0 0 30px rgba(10,132,255,0.3);
+    animation:talkRing .7s ease-in-out infinite alternate;
   }
-  @keyframes ringPulse{
-    0%{border-color:rgba(0,245,255,.4);box-shadow:0 0 10px rgba(0,245,255,.2);}
-    100%{border-color:rgba(0,245,255,.9);box-shadow:0 0 30px rgba(0,245,255,.5),0 0 60px rgba(123,47,247,.2);}
+  @keyframes talkRing{
+    0%{border-color:rgba(10,132,255,0.3);box-shadow:0 0 15px rgba(10,132,255,0.15);}
+    100%{border-color:rgba(100,210,255,0.8);box-shadow:0 0 35px rgba(10,132,255,0.45),0 0 70px rgba(94,92,230,0.15);}
   }
 
-  /* VOICE BARS — inside avatar, driven by amplitude */
-  .nx-voice-vis{position:absolute;bottom:0;left:0;right:0;height:46%;display:flex;align-items:flex-end;justify-content:center;gap:2px;padding:0 18px;}
-  .nx-v-bar{width:3px;border-radius:2px 2px 0 0;background:linear-gradient(to top,var(--neon),var(--neon2));transition:height .08s ease;}
-
-  .nx-ai-name{font-family:var(--font-head);font-size:13px;letter-spacing:4px;color:var(--neon);text-align:center;}
-  .nx-ai-status{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:2px;text-align:center;transition:color .3s;}
-
-  /* START BTN */
-  .nx-start-btn{background:none;border:none;cursor:pointer;padding:0;}
-  .nx-start-inner{
-    display:flex;align-items:center;gap:14px;
-    background:linear-gradient(135deg,rgba(0,245,255,.08),rgba(123,47,247,.08));
-    border:1px solid rgba(0,245,255,.35);padding:16px 40px;
-    clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px);
-    transition:all .3s;letter-spacing:3px;
+  /* Avatar glass card */
+  .ios-avatar-glass {
+    width:188px;height:188px;border-radius:50%;
+    background: radial-gradient(ellipse at 35% 30%, rgba(10,132,255,0.12) 0%, rgba(10,15,30,0.85) 65%);
+    border:1px solid rgba(255,255,255,0.13);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.5),
+      inset 0 1px 1px rgba(255,255,255,0.12),
+      inset 0 -1px 1px rgba(0,0,0,0.3);
+    position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;
+    transition:border-color .3s,box-shadow .3s;
   }
-  .nx-start-btn:hover .nx-start-inner{
-    background:linear-gradient(135deg,rgba(0,245,255,.18),rgba(123,47,247,.18));
-    box-shadow:var(--glow),0 0 60px rgba(123,47,247,.15);
-    border-color:var(--neon);
-    transform:scale(1.02);
+  .ios-avatar-glass.talking{
+    border-color:rgba(10,132,255,0.4);
+    box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 40px rgba(10,132,255,0.2),inset 0 1px 1px rgba(255,255,255,0.14);
   }
-  .nx-start-btn.active .nx-start-inner{border-color:var(--neon3);background:rgba(255,45,120,.08);}
-  .nx-start-btn.active:hover .nx-start-inner{background:rgba(255,45,120,.18);box-shadow:0 0 20px rgba(255,45,120,.4);}
-  .nx-start-text{font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--neon);}
-  .nx-start-btn.active .nx-start-text{color:var(--neon3);}
+  .ios-avatar-inner{
+    width:168px;height:168px;border-radius:50%;
+    background:radial-gradient(ellipse at 40% 30%,rgba(20,30,60,0.9),rgba(8,12,24,0.98));
+    display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+  }
+  /* Glass sheen */
+  .ios-avatar-glass::after{
+    content:'';position:absolute;top:0;left:0;right:0;height:50%;
+    background:linear-gradient(180deg,rgba(255,255,255,0.07) 0%,transparent 100%);
+    border-radius:50% 50% 0 0;pointer-events:none;
+  }
 
-  /* CONTROLS — 3 buttons only */
-  .nx-controls{display:flex;align-items:center;gap:20px;}
-  .nx-ctrl-item{display:flex;flex-direction:column;align-items:center;gap:6px;}
-  .nx-ctrl-btn{
-    width:52px;height:52px;border-radius:50%;
-    border:1px solid var(--border);background:var(--panel);
+  /* Voice bars */
+  .ios-voice-vis{position:absolute;bottom:0;left:0;right:0;height:44%;display:flex;align-items:flex-end;justify-content:center;gap:2px;padding:0 20px;}
+  .ios-v-bar{width:3px;border-radius:2px 2px 0 0;background:linear-gradient(to top,var(--blue),var(--teal));transition:height .08s ease;}
+
+  /* AI name/status */
+  .ios-ai-name {
+    font-size:16px;font-weight:600;letter-spacing:-0.3px;
+    color:rgba(255,255,255,0.9);text-align:center;
+  }
+  .ios-ai-status {
+    font-size:12px;font-weight:400;color:var(--text3);
+    text-align:center;transition:color .3s;letter-spacing:0.1px;
+    margin-top:3px;
+  }
+  .ios-ai-status.active{color:var(--blue);}
+  .ios-ai-status.listening{color:var(--green);}
+
+  /* ── START BUTTON — big iOS pill ── */
+  .ios-start-btn {
+    border:none;cursor:pointer;padding:0;background:none;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+  }
+  .ios-start-inner {
+    display:flex;align-items:center;gap:12px;
+    background: rgba(10,132,255,0.18);
+    border: 1px solid rgba(10,132,255,0.35);
+    border-radius: 999px;
+    padding: 16px 44px;
+    box-shadow:
+      0 8px 32px rgba(10,132,255,0.18),
+      inset 0 1px 1px rgba(255,255,255,0.1),
+      inset 0 -1px 1px rgba(0,0,0,0.2);
+    backdrop-filter: var(--blur-sm);
+    -webkit-backdrop-filter: var(--blur-sm);
+    transition: all .22s cubic-bezier(0.4,0,0.2,1);
+  }
+  .ios-start-btn:hover .ios-start-inner {
+    background: rgba(10,132,255,0.28);
+    border-color: rgba(10,132,255,0.55);
+    box-shadow: 0 12px 40px rgba(10,132,255,0.3),inset 0 1px 1px rgba(255,255,255,0.12);
+    transform:scale(1.03);
+  }
+  .ios-start-btn:active .ios-start-inner{transform:scale(0.97);opacity:.85;}
+  .ios-start-btn.active .ios-start-inner{
+    background:rgba(255,69,58,0.18);
+    border-color:rgba(255,69,58,0.4);
+    box-shadow:0 8px 32px rgba(255,69,58,0.2),inset 0 1px 1px rgba(255,255,255,0.08);
+  }
+  .ios-start-btn.active:hover .ios-start-inner{
+    background:rgba(255,69,58,0.28);
+    border-color:rgba(255,69,58,0.6);
+    box-shadow:0 12px 40px rgba(255,69,58,0.3);
+    transform:scale(1.03);
+  }
+  .ios-start-text{font-size:15px;font-weight:600;color:rgba(255,255,255,0.9);letter-spacing:-0.2px;}
+  .ios-start-btn.active .ios-start-text{color:rgba(255,120,110,1);}
+
+  /* ── CONTROL BUTTONS ── */
+  .ios-controls { display:flex;align-items:center;gap:18px; }
+  .ios-ctrl-item { display:flex;flex-direction:column;align-items:center;gap:7px; }
+  .ios-ctrl-btn {
+    width:56px;height:56px;border-radius:50%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.1);
+    backdrop-filter: var(--blur-sm);
+    -webkit-backdrop-filter: var(--blur-sm);
     cursor:pointer;display:flex;align-items:center;justify-content:center;
-    transition:all .2s;color:var(--muted);
+    transition:all .18s cubic-bezier(0.4,0,0.2,1);
+    color:rgba(255,255,255,0.7);
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
   }
-  .nx-ctrl-btn:hover{border-color:var(--neon);color:var(--neon);box-shadow:var(--glow);}
-  .nx-ctrl-btn.muted{border-color:rgba(255,45,120,.5);background:rgba(255,45,120,.08);color:#ff2d78;}
-  .nx-ctrl-btn.muted:hover{border-color:var(--neon3);box-shadow:0 0 20px rgba(255,45,120,.35);}
-  .nx-ctrl-btn.off{border-color:rgba(255,45,120,.5);background:rgba(255,45,120,.08);color:#ff2d78;}
-  .nx-ctrl-btn.off:hover{border-color:var(--neon3);box-shadow:0 0 20px rgba(255,45,120,.35);}
-  .nx-ctrl-label{font-family:var(--font-mono);font-size:9px;color:var(--muted);text-align:center;letter-spacing:1px;}
-  .nx-ctrl-label.muted,.nx-ctrl-label.off{color:rgba(255,45,120,.7);}
+  .ios-ctrl-btn:hover {
+    background:var(--surfaceH);
+    border-color:rgba(255,255,255,0.22);
+    color:rgba(255,255,255,0.95);
+    transform:scale(1.06);
+    box-shadow:0 6px 24px rgba(0,0,0,0.4),inset 0 1px 1px rgba(255,255,255,0.14);
+  }
+  .ios-ctrl-btn:active{transform:scale(0.93);opacity:.8;}
+  .ios-ctrl-btn.off {
+    background:rgba(255,69,58,0.14);
+    border-color:rgba(255,69,58,0.35);
+    color:rgba(255,100,90,0.9);
+    box-shadow:0 4px 16px rgba(255,69,58,0.15),inset 0 1px 1px rgba(255,255,255,0.06);
+  }
+  .ios-ctrl-btn.off:hover{
+    background:rgba(255,69,58,0.24);
+    border-color:rgba(255,69,58,0.55);
+    transform:scale(1.06);
+    box-shadow:0 6px 24px rgba(255,69,58,0.25);
+  }
+  .ios-ctrl-label{font-size:11px;font-weight:500;color:var(--text3);text-align:center;letter-spacing:0.1px;}
+  .ios-ctrl-label.off{color:rgba(255,90,80,0.7);}
 
-  /* RIGHT PANEL */
-  .nx-right{border-left:1px solid var(--border);background:rgba(9,18,36,.6);display:flex;flex-direction:column;overflow:hidden;}
-  .nx-tabs{display:flex;border-bottom:1px solid var(--border);}
-  .nx-tab{flex:1;padding:12px;text-align:center;font-family:var(--font-mono);font-size:11px;letter-spacing:2px;cursor:pointer;color:var(--muted);transition:all .2s;border-bottom:2px solid transparent;}
-  .nx-tab.active{color:var(--neon);border-bottom-color:var(--neon);}
-  .nx-panel-body{flex:1;overflow-y:auto;padding:18px;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+  /* ── RIGHT PANEL ── */
+  .ios-right {
+    border-left:1px solid var(--border);
+    background:rgba(8,13,26,0.6);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    display:flex;flex-direction:column;overflow:hidden;
+  }
 
-  /* TRANSCRIPT */
-  .nx-msg{margin-bottom:16px;animation:fadeIn .3s ease;}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  .nx-msg-who{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;margin-bottom:4px;}
-  .nx-msg-who.ai{color:var(--neon);}
-  .nx-msg-who.user{color:var(--neon2);}
-  .nx-msg-text{font-size:13px;line-height:1.6;color:rgba(224,244,255,.85);background:rgba(255,255,255,.03);border-left:2px solid;padding:8px 12px;}
-  .nx-msg-text.ai{border-color:rgba(0,245,255,.3);}
-  .nx-msg-text.user{border-color:rgba(123,47,247,.3);}
-  .nx-divider{font-family:var(--font-mono);font-size:10px;color:var(--muted);text-align:center;padding:10px 0;letter-spacing:1px;}
+  /* Tab bar — iOS segment style */
+  .ios-tabs {
+    display:flex;
+    padding:12px 14px 0;
+    gap:2px;
+    border-bottom:1px solid var(--border);
+  }
+  .ios-tab {
+    flex:1;padding:8px 6px;text-align:center;
+    font-size:12px;font-weight:500;color:var(--text3);
+    cursor:pointer;transition:all .18s;
+    border-radius:var(--radius-xs) var(--radius-xs) 0 0;
+    letter-spacing:0.1px;
+    border-bottom:2px solid transparent;
+    margin-bottom:-1px;
+  }
+  .ios-tab:hover{color:var(--text2);background:rgba(255,255,255,.03);}
+  .ios-tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600;}
 
-  /* STATS */
-  .nx-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .nx-stat-card{background:var(--panel);border:1px solid var(--border);padding:12px;clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);}
-  .nx-stat-val{font-family:var(--font-head);font-size:20px;font-weight:700;color:var(--neon);}
-  .nx-stat-lab{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:3px;}
-  .nx-progress-bar{height:4px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;margin:16px 0 6px;}
-  .nx-progress-fill{height:100%;background:linear-gradient(90deg,var(--neon),var(--neon2));border-radius:2px;transition:width .5s;}
-  .nx-progress-labels{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:var(--muted);}
-  .nx-kw-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
-  .nx-kw{background:rgba(0,245,255,.08);border:1px solid rgba(0,245,255,.2);padding:4px 10px;font-family:var(--font-mono);font-size:10px;color:var(--neon);letter-spacing:1px;}
+  .ios-panel-body{flex:1;overflow-y:auto;padding:16px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent;}
 
-  /* SESSION INFO */
-  .nx-info-row{display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid var(--border);}
-  .nx-info-key{color:var(--muted);}
-  .nx-info-val{font-family:var(--font-mono);color:var(--neon);}
+  /* Messages */
+  .ios-msg{margin-bottom:14px;animation:msgIn .28s cubic-bezier(0.4,0,0.2,1);}
+  @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .ios-msg-who{font-size:11px;font-weight:600;letter-spacing:0.3px;margin-bottom:5px;}
+  .ios-msg-who.ai{color:var(--blue);}
+  .ios-msg-who.user{color:var(--blue2);}
+  .ios-msg-bubble{
+    font-size:13px;line-height:1.55;color:rgba(255,255,255,0.82);
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius-xs);
+    padding:9px 13px;
+    backdrop-filter:blur(10px);
+  }
+  .ios-msg-bubble.ai{border-color:rgba(10,132,255,0.2);background:rgba(10,132,255,0.07);}
+  .ios-msg-bubble.user{border-color:rgba(94,92,230,0.2);background:rgba(94,92,230,0.07);}
+  .ios-divider{font-size:11px;color:var(--text3);text-align:center;padding:8px 0;letter-spacing:0.3px;}
 
-  /* FOOTER */
-  .nx-footer{border-top:1px solid var(--border);padding:10px 30px;display:flex;align-items:center;justify-content:space-between;background:rgba(6,13,26,.9);}
-  .nx-footer-info{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:1px;}
-  .nx-timer{font-family:var(--font-head);font-size:13px;color:var(--neon);letter-spacing:2px;}
+  /* Stats */
+  .ios-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .ios-stat-card{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius-sm);padding:14px 12px;
+    backdrop-filter:blur(10px);
+    box-shadow:inset 0 1px 1px rgba(255,255,255,0.06);
+  }
+  .ios-stat-val{font-size:22px;font-weight:700;color:var(--text);letter-spacing:-0.5px;}
+  .ios-stat-lab{font-size:11px;font-weight:500;color:var(--text3);margin-top:2px;letter-spacing:0.2px;}
+  .ios-progress-wrap{margin-top:18px;}
+  .ios-progress-label{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:0.3px;margin-bottom:8px;}
+  .ios-progress-bar{height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden;}
+  .ios-progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));border-radius:999px;transition:width .5s ease;}
+  .ios-progress-pct{font-size:11px;color:var(--text3);text-align:right;margin-top:5px;}
+  .ios-kw-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+  .ios-kw{
+    background:rgba(10,132,255,0.1);border:1px solid rgba(10,132,255,0.22);
+    border-radius:999px;padding:4px 11px;
+    font-size:11px;font-weight:500;color:rgba(100,180,255,0.9);letter-spacing:0.1px;
+  }
+
+  /* Session info */
+  .ios-info-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+  .ios-info-row:last-child{border-bottom:none;}
+  .ios-info-key{color:var(--text3);font-weight:400;}
+  .ios-info-val{color:var(--text);font-weight:500;font-size:13px;}
+
+  /* ── FOOTER ── */
+  .ios-footer {
+    border-top:1px solid var(--border);
+    padding:10px 24px;
+    display:flex;align-items:center;justify-content:space-between;
+    background:rgba(8,12,24,0.8);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+  }
+  .ios-footer-info{font-size:11px;font-weight:400;color:var(--text3);letter-spacing:0.1px;}
+  .ios-timer{font-size:14px;font-weight:600;color:var(--text);letter-spacing:-0.3px;}
 `;
 
-/* ─── Sub-components ─── */
-function LogoIcon() {
+/* ── Logo ── */
+function LogoMark() {
   return (
-    <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
-      <polygon points="19,1.5 34.5,10.25 34.5,27.75 19,36.5 3.5,27.75 3.5,10.25"
-        fill="none" stroke="rgba(0,245,255,0.25)" strokeWidth="0.8"/>
-      <polygon points="19,4 32,11.5 32,26.5 19,34 6,26.5 6,11.5"
-        fill="rgba(0,245,255,0.04)" stroke="#00f5ff" strokeWidth="1.5"/>
-      <polygon points="19,9 27,13.5 27,24.5 19,29 11,24.5 11,13.5"
-        fill="none" stroke="rgba(123,47,247,0.5)" strokeWidth="0.8"/>
-      <circle cx="19" cy="19" r="4" fill="rgba(0,245,255,0.12)" stroke="#00f5ff" strokeWidth="1.5"/>
-      <circle cx="19" cy="19" r="1.5" fill="#00f5ff"/>
-      <line x1="19" y1="4" x2="19" y2="9" stroke="#00f5ff" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="19" y1="29" x2="19" y2="34" stroke="#00f5ff" strokeWidth="1.5" strokeLinecap="round"/>
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <rect width="32" height="32" rx="9" fill="rgba(10,132,255,0.15)" stroke="rgba(10,132,255,0.3)" strokeWidth="1"/>
+      <circle cx="16" cy="16" r="7" fill="none" stroke="rgba(100,210,255,0.7)" strokeWidth="1.5"/>
+      <circle cx="16" cy="16" r="3.5" fill="rgba(10,132,255,0.6)"/>
+      <circle cx="16" cy="16" r="1.5" fill="white"/>
+      <line x1="16" y1="6" x2="16" y2="9" stroke="rgba(100,210,255,0.5)" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="16" y1="23" x2="16" y2="26" stroke="rgba(100,210,255,0.5)" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="6" y1="16" x2="9" y2="16" stroke="rgba(100,210,255,0.5)" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="23" y1="16" x2="26" y2="16" stroke="rgba(100,210,255,0.5)" strokeWidth="1.5" strokeLinecap="round"/>
     </svg>
   );
 }
 
-/* AI face — eyes close when cam off, mouth mutes when speaker off, ears hidden when mic off */
-function AIFaceSVG({ blink, camOn, speakerOn, micOn, amplitude }) {
+/* ── AI Face ── */
+function AIFace({ blink, camOn, speakerOn, micOn, amplitude }) {
   const eyesClosed = !camOn;
   const mouthMuted = !speakerOn;
   const earsHidden = !micOn;
-
-  // Mouth openness driven by amplitude (0–1)
   const mouthOpen = Math.min(amplitude * 6, 5);
 
   return (
     <svg width="120" height="120" viewBox="0 0 120 120">
       {/* Head */}
-      <ellipse cx="60" cy="56" rx="32" ry="35" fill="none" stroke="#00f5ff" strokeWidth="1"/>
-
-      {/* Left eye socket */}
-      <ellipse cx="48" cy="50" rx="6" ry="5" fill="rgba(0,245,255,0.08)" stroke="#00f5ff" strokeWidth="1"/>
-      {/* Right eye socket */}
-      <ellipse cx="72" cy="50" rx="6" ry="5" fill="rgba(0,245,255,0.08)" stroke="#00f5ff" strokeWidth="1"/>
+      <ellipse cx="60" cy="56" rx="31" ry="34"
+        fill="rgba(10,132,255,0.04)" stroke="rgba(100,210,255,0.55)" strokeWidth="1.2"/>
+      {/* Eye sockets */}
+      <ellipse cx="47" cy="50" rx="6.5" ry="5.5" fill="rgba(10,132,255,0.1)" stroke="rgba(100,210,255,0.4)" strokeWidth="0.8"/>
+      <ellipse cx="73" cy="50" rx="6.5" ry="5.5" fill="rgba(10,132,255,0.1)" stroke="rgba(100,210,255,0.4)" strokeWidth="0.8"/>
 
       {eyesClosed ? (
         <>
-          <line x1="43" y1="50" x2="53" y2="50" stroke="#00f5ff" strokeWidth="1.5" strokeLinecap="round"/>
-          <line x1="67" y1="50" x2="77" y2="50" stroke="#00f5ff" strokeWidth="1.5" strokeLinecap="round"/>
+          <line x1="42" y1="50" x2="52" y2="50" stroke="rgba(100,210,255,0.7)" strokeWidth="1.5" strokeLinecap="round"/>
+          <line x1="68" y1="50" x2="78" y2="50" stroke="rgba(100,210,255,0.7)" strokeWidth="1.5" strokeLinecap="round"/>
         </>
       ) : (
         <>
-          <ellipse cx="48" cy="50" rx="2.5" ry={blink ? 0.3 : 2.5} fill="#00f5ff"/>
-          <ellipse cx="72" cy="50" rx="2.5" ry={blink ? 0.3 : 2.5} fill="#00f5ff"/>
-          <circle cx="49" cy="49" r="1" fill="white" opacity="0.5"/>
-          <circle cx="73" cy="49" r="1" fill="white" opacity="0.5"/>
+          <ellipse cx="47" cy="50" rx="2.8" ry={blink ? 0.3 : 2.8} fill="rgba(100,210,255,0.9)"/>
+          <ellipse cx="73" cy="50" rx="2.8" ry={blink ? 0.3 : 2.8} fill="rgba(100,210,255,0.9)"/>
+          <circle cx="48.2" cy="48.8" r="1" fill="white" opacity="0.6"/>
+          <circle cx="74.2" cy="48.8" r="1" fill="white" opacity="0.6"/>
+          {/* Iris glow */}
+          <ellipse cx="47" cy="50" rx="4" ry="3.8" fill="none" stroke="rgba(10,132,255,0.25)" strokeWidth="0.8"/>
+          <ellipse cx="73" cy="50" rx="4" ry="3.8" fill="none" stroke="rgba(10,132,255,0.25)" strokeWidth="0.8"/>
         </>
       )}
 
       {/* Nose */}
-      <path d="M58 54 L60 60 L62 54" fill="none" stroke="rgba(0,245,255,0.4)" strokeWidth="0.8"/>
+      <path d="M58 54 L60 60 L62 54" fill="none" stroke="rgba(100,210,255,0.3)" strokeWidth="0.8"/>
 
       {/* Mouth */}
       {mouthMuted ? (
         <>
-          <line x1="50" y1="68" x2="70" y2="68" stroke="rgba(255,45,120,0.7)" strokeWidth="1.5" strokeLinecap="round"/>
-          <line x1="55" y1="63" x2="60" y2="68" stroke="rgba(255,45,120,0.45)" strokeWidth="1" strokeLinecap="round"/>
-          <line x1="65" y1="63" x2="60" y2="68" stroke="rgba(255,45,120,0.45)" strokeWidth="1" strokeLinecap="round"/>
+          <line x1="50" y1="68" x2="70" y2="68" stroke="rgba(255,69,58,0.75)" strokeWidth="1.5" strokeLinecap="round"/>
+          <line x1="55" y1="63" x2="60" y2="68" stroke="rgba(255,69,58,0.5)" strokeWidth="1" strokeLinecap="round"/>
+          <line x1="65" y1="63" x2="60" y2="68" stroke="rgba(255,69,58,0.5)" strokeWidth="1" strokeLinecap="round"/>
         </>
       ) : mouthOpen > 0.5 ? (
-        /* Animated talking mouth — opens with amplitude */
         <>
-          <path d={`M50 68 Q60 ${68 + mouthOpen} 70 68`} fill={`rgba(0,245,255,${0.08 + amplitude * 0.15})`} stroke="#00f5ff" strokeWidth="1"/>
-          <path d={`M52 68 Q60 ${68 - mouthOpen * 0.3} 68 68`} fill="none" stroke="rgba(0,245,255,0.25)" strokeWidth="0.5"/>
+          <path d={`M50 68 Q60 ${68 + mouthOpen} 70 68`}
+            fill={`rgba(10,132,255,${0.06 + amplitude*0.12})`}
+            stroke="rgba(100,210,255,0.7)" strokeWidth="1.2"/>
+          <path d={`M52 68 Q60 ${68 - mouthOpen*0.3} 68 68`}
+            fill="none" stroke="rgba(100,210,255,0.2)" strokeWidth="0.5"/>
         </>
       ) : (
-        <path d="M50 68 Q60 74 70 68" fill="none" stroke="#00f5ff" strokeWidth="1"/>
+        <path d="M50 68 Q60 74 70 68" fill="none" stroke="rgba(100,210,255,0.6)" strokeWidth="1.2"/>
       )}
 
-      {/* Ears / side connectors — hidden when mic muted */}
+      {/* Ears — hidden when mic muted */}
       {!earsHidden && (
         <>
-          <line x1="28" y1="56" x2="20" y2="56" stroke="rgba(0,245,255,0.3)" strokeWidth="0.8"/>
-          <line x1="20" y1="56" x2="20" y2="70" stroke="rgba(0,245,255,0.3)" strokeWidth="0.8"/>
-          <line x1="92" y1="56" x2="100" y2="56" stroke="rgba(0,245,255,0.3)" strokeWidth="0.8"/>
-          <line x1="100" y1="56" x2="100" y2="70" stroke="rgba(0,245,255,0.3)" strokeWidth="0.8"/>
+          <line x1="29" y1="56" x2="21" y2="56" stroke="rgba(100,210,255,0.25)" strokeWidth="0.8"/>
+          <line x1="21" y1="56" x2="21" y2="70" stroke="rgba(100,210,255,0.25)" strokeWidth="0.8"/>
+          <line x1="91" y1="56" x2="99" y2="56" stroke="rgba(100,210,255,0.25)" strokeWidth="0.8"/>
+          <line x1="99" y1="56" x2="99" y2="70" stroke="rgba(100,210,255,0.25)" strokeWidth="0.8"/>
         </>
       )}
 
       {/* Neck */}
-      <line x1="54" y1="91" x2="54" y2="105" stroke="rgba(0,245,255,0.4)" strokeWidth="1"/>
-      <line x1="66" y1="91" x2="66" y2="105" stroke="rgba(0,245,255,0.4)" strokeWidth="1"/>
-      <path d="M45 105 Q60 100 75 105" fill="none" stroke="rgba(0,245,255,0.3)" strokeWidth="0.8"/>
+      <line x1="54" y1="90" x2="54" y2="104" stroke="rgba(100,210,255,0.3)" strokeWidth="1"/>
+      <line x1="66" y1="90" x2="66" y2="104" stroke="rgba(100,210,255,0.3)" strokeWidth="1"/>
+      <path d="M45 104 Q60 99 75 104" fill="none" stroke="rgba(100,210,255,0.2)" strokeWidth="0.8"/>
     </svg>
   );
 }
 
-function Toggle({ on, onClick }) {
+/* iOS-style Toggle */
+function IOSToggle({ on, onClick }) {
   return (
-    <div className={`nx-toggle-track${on ? " on" : ""}`} onClick={onClick} style={{cursor:"pointer"}}>
-      <div className="nx-toggle-thumb"/>
+    <div className={`ios-toggle-track${on?" on":""}`} onClick={onClick}>
+      <div className="ios-toggle-thumb"/>
     </div>
   );
 }
 
-/* ─── MAIN COMPONENT ─── */
+/* ─── MAIN ─── */
 export default function AIInterviewer() {
   useEffect(() => { injectFonts(); }, []);
 
@@ -432,15 +655,15 @@ export default function AIInterviewer() {
   const [voice, setVoice]         = useState("neural-f");
   const [currentQ, setCurrentQ]   = useState(0);
   const [transcript, setTranscript] = useState([
-    { who: "ai", text: "Welcome to NexusAI Interview System. I am your AI interviewer. When ready, press INITIATE INTERVIEW to begin." }
+    { who:"ai", text:"Welcome to Nexus AI Interview System. I am your AI interviewer. When ready, press Start Interview to begin." }
   ]);
   const [seconds, setSeconds]     = useState(0);
   const [blink, setBlink]         = useState(false);
   const [voiceBars, setVoiceBars] = useState(Array(16).fill(4));
-  const [amplitude, setAmplitude] = useState(0); // 0–1, drives face animation
+  const [amplitude, setAmplitude] = useState(0);
   const [isTalking, setIsTalking] = useState(false);
   const [stats, setStats]         = useState({ conf:"—", clar:"—", pace:"—", perf:0 });
-  const [aiStatus, setAiStatus]   = useState("● READY TO BEGIN");
+  const [aiStatus, setAiStatus]   = useState("Ready to begin");
 
   const timerRef  = useRef(null);
   const voiceRef  = useRef(null);
@@ -449,39 +672,30 @@ export default function AIInterviewer() {
   const panelRef  = useRef(null);
   const queuedRef = useRef(null);
 
-  /* timer */
   useEffect(() => {
     if (interviewActive) {
-      timerRef.current = setInterval(() => setSeconds(s => s + 1), 1000);
-    } else {
-      clearInterval(timerRef.current);
-    }
+      timerRef.current = setInterval(() => setSeconds(s => s+1), 1000);
+    } else clearInterval(timerRef.current);
     return () => clearInterval(timerRef.current);
   }, [interviewActive]);
 
-  /* voice bars + amplitude simulation — AI "talking" phase */
   useEffect(() => {
     if (isTalking) {
       voiceRef.current = setInterval(() => {
-        const a = Math.random() * 0.7 + 0.3; // amplitude 0.3–1.0
+        const a = Math.random() * 0.7 + 0.3;
         setAmplitude(a);
-        setVoiceBars(Array(16).fill(0).map(() => Math.random() * 42 + 4));
+        setVoiceBars(Array(16).fill(0).map(() => Math.random()*42+4));
       }, 90);
     } else {
       clearInterval(voiceRef.current);
       setVoiceBars(Array(16).fill(4));
-      // Smooth amplitude back to 0
       ampRef.current = setInterval(() => {
-        setAmplitude(prev => {
-          if (prev <= 0.02) { clearInterval(ampRef.current); return 0; }
-          return prev * 0.75;
-        });
+        setAmplitude(prev => { if(prev<=0.02){clearInterval(ampRef.current);return 0;} return prev*0.75; });
       }, 60);
     }
     return () => { clearInterval(voiceRef.current); clearInterval(ampRef.current); };
   }, [isTalking]);
 
-  /* eye blink */
   useEffect(() => {
     blinkRef.current = setInterval(() => {
       setBlink(true);
@@ -490,38 +704,31 @@ export default function AIInterviewer() {
     return () => clearInterval(blinkRef.current);
   }, []);
 
-  /* auto-scroll transcript */
   useEffect(() => {
     if (panelRef.current) panelRef.current.scrollTop = 99999;
   }, [transcript]);
 
-  const addMsg = useCallback((who, text) => {
-    setTranscript(prev => [...prev, { who, text }]);
-  }, []);
+  const addMsg = useCallback((who, text) => setTranscript(p => [...p,{who,text}]), []);
 
   const askQuestion = useCallback((idx) => {
     if (idx >= QUESTIONS.length) return;
-    setCurrentQ(idx + 1);
-    // AI starts talking
+    setCurrentQ(idx+1);
     setIsTalking(true);
-    setAiStatus("● SPEAKING...");
+    setAiStatus("Speaking...");
     addMsg("ai", QUESTIONS[idx]);
-    // Simulate AI finishing speaking after ~3s
-    const talkDur = 2800 + Math.random() * 1200;
+    const dur = 2800 + Math.random()*1200;
     queuedRef.current = setTimeout(() => {
       setIsTalking(false);
-      setAiStatus("● LISTENING...");
-      setTimeout(() => {
-        addMsg("user", "[User response being recorded...]");
-      }, 1200);
-    }, talkDur);
+      setAiStatus("Listening...");
+      setTimeout(() => addMsg("user","[User response being recorded...]"), 1200);
+    }, dur);
   }, [addMsg]);
 
   const startInterview = useCallback(() => {
     setInterviewActive(true);
     setCurrentQ(0);
     setSeconds(0);
-    setAiStatus("● INITIALIZING...");
+    setAiStatus("Initializing...");
     setTimeout(() => askQuestion(0), 800);
   }, [askQuestion]);
 
@@ -529,160 +736,173 @@ export default function AIInterviewer() {
     clearTimeout(queuedRef.current);
     setInterviewActive(false);
     setIsTalking(false);
-    setAiStatus("● SESSION ENDED");
-    addMsg("ai", "Thank you for completing the interview. Your results will be analyzed and sent shortly.");
+    setAiStatus("Session ended");
+    addMsg("ai","Thank you for completing the interview. Your results will be analyzed and sent shortly.");
     setStats({
-      conf: Math.floor(Math.random() * 30 + 60) + "%",
-      clar: Math.floor(Math.random() * 25 + 65) + "%",
-      pace: Math.floor(Math.random() * 20 + 70) + "%",
-      perf: Math.floor(Math.random() * 30 + 60),
+      conf: Math.floor(Math.random()*30+60)+"%",
+      clar: Math.floor(Math.random()*25+65)+"%",
+      pace: Math.floor(Math.random()*20+70)+"%",
+      perf: Math.floor(Math.random()*30+60),
     });
   }, [addMsg]);
 
   const handleStartToggle = () => interviewActive ? stopInterview() : startInterview();
+  const formatTime = (s) =>
+    `${String(Math.floor(s/3600)).padStart(2,"0")}:${String(Math.floor((s%3600)/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
 
-  const formatTime = (s) => {
-    const h = String(Math.floor(s / 3600)).padStart(2, "0");
-    const m = String(Math.floor((s % 3600) / 60)).padStart(2, "0");
-    const sec = String(s % 60).padStart(2, "0");
-    return `${h}:${m}:${sec}`;
-  };
+  const sessionMinSec = `${String(Math.floor((seconds%3600)/60)).padStart(2,"0")}:${String(seconds%60).padStart(2,"0")}`;
+  const langLabel  = LANGUAGES.find(l=>l.value===language)?.label.replace(/^\S+\s/,"") || "English";
+  const voiceLabel = VOICES.find(v=>v.value===voice)?.label || "Neural Female — Aria";
 
-  const sessionMinSec = `${String(Math.floor((seconds % 3600) / 60)).padStart(2,"0")}:${String(seconds % 60).padStart(2,"0")}`;
-  const langLabel  = LANGUAGES.find(l => l.value === language)?.label.replace(/^\S+\s/, "") || "English";
-  const voiceLabel = VOICES.find(v => v.value === voice)?.label || "Neural Female — Aria";
+  const statusClass = isTalking ? "active" : interviewActive ? "listening" : "";
 
-  /* ─── RENDER ─── */
   return (
-    <div className="nexus-root">
+    <div className="ios-root">
       <style>{css}</style>
 
       {/* Background */}
-      <div className="nx-bg-grid"/>
-      <div className="nx-scanlines"/>
+      <div className="ios-bg">
+        <div className="ios-blob b1"/><div className="ios-blob b2"/><div className="ios-blob b3"/>
+      </div>
 
       {/* Overlay */}
-      <div className={`nx-overlay${menuOpen ? " open" : ""}`} onClick={() => setMenuOpen(false)}/>
+      <div className={`ios-overlay${menuOpen?" open":""}`} onClick={() => setMenuOpen(false)}/>
 
-      {/* ── SIDE MENU ── */}
-      <div className={`nx-sidemenu${menuOpen ? " open" : ""}`}>
-        <div className="nx-menu-section">
-          <div className="nx-menu-label">NAVIGATION</div>
-          {[
-            { id:"home",      icon: <><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></>, label:"HOME" },
-            { id:"interview", icon: <><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0112 0v1"/></>,                                    label:"INTERVIEW" },
-            { id:"results",   icon: <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>,                                                        label:"RESULTS" },
-            { id:"profile",   icon: <><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></>,                    label:"PROFILE" },
-          ].map(n => (
-            <div key={n.id} className={`nx-menu-item${activeNav===n.id?" active":""}`} onClick={() => { setActiveNav(n.id); setMenuOpen(false); }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">{n.icon}</svg>
-              {n.label}
-            </div>
-          ))}
-        </div>
+      {/* ── SIDE SHEET ── */}
+      <div className={`ios-sheet${menuOpen?" open":""}`}>
 
-        <div className="nx-menu-section">
-          <div className="nx-menu-label">CONTROLS</div>
-          <div className="nx-menu-toggle"><span>MICROPHONE</span><Toggle on={micOn} onClick={() => setMicOn(v => !v)}/></div>
-          <div className="nx-menu-toggle"><span>CAMERA</span><Toggle on={camOn} onClick={() => setCamOn(v => !v)}/></div>
-          <div className="nx-menu-toggle"><span>AI VOICE</span><Toggle on={aiVoiceOn} onClick={() => setAiVoiceOn(v => !v)}/></div>
-        </div>
-
-        <div className="nx-menu-section">
-          <div className="nx-menu-label">LANGUAGE</div>
-          <select className="nx-select" value={language} onChange={e => setLanguage(e.target.value)}>
-            {LANGUAGES.map(l => <option key={l.value} value={l.value}>{l.label}</option>)}
-          </select>
-        </div>
-
-        <div className="nx-menu-section">
-          <div className="nx-menu-label">AI VOICE TYPE</div>
-          <select className="nx-select" value={voice} onChange={e => setVoice(e.target.value)}>
-            {VOICES.map(v => <option key={v.value} value={v.value}>{v.label}</option>)}
-          </select>
-        </div>
-
-        <div className="nx-menu-section">
-          <div className="nx-menu-label">ACCOUNT</div>
-          <div className="nx-menu-item" onClick={() => { alert("Connect to your Python auth backend!"); setMenuOpen(false); }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/>
-              <polyline points="10,17 15,12 10,7"/>
-              <line x1="15" y1="12" x2="3" y2="12"/>
-            </svg>
-            LOGIN / SIGNUP
+        {/* Navigation */}
+        <div className="ios-sheet-section">
+          <div className="ios-sheet-label">Navigation</div>
+          <div className="ios-sheet-group">
+            {[
+              {id:"home",      icon:<><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></>,  label:"Home"},
+              {id:"interview", icon:<><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0112 0v1"/></>,                                      label:"Interview"},
+              {id:"results",   icon:<polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>,                                                          label:"Results"},
+              {id:"profile",   icon:<><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></>,                      label:"Profile"},
+            ].map(n => (
+              <div key={n.id} className={`ios-sheet-row${activeNav===n.id?" active":""}`} onClick={() => { setActiveNav(n.id); setMenuOpen(false); }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">{n.icon}</svg>
+                {n.label}
+                <svg className="ios-row-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+            ))}
           </div>
-          <div className="nx-menu-item" onClick={() => setMenuOpen(false)}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <circle cx="12" cy="12" r="3"/>
-              <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
-            </svg>
-            SETTINGS
+        </div>
+
+        {/* Controls */}
+        <div className="ios-sheet-section">
+          <div className="ios-sheet-label">Controls</div>
+          <div className="ios-sheet-group">
+            {[
+              {label:"Microphone",  on:micOn,       toggle:()=>setMicOn(v=>!v)},
+              {label:"Camera",      on:camOn,       toggle:()=>setCamOn(v=>!v)},
+              {label:"AI Voice",    on:aiVoiceOn,   toggle:()=>setAiVoiceOn(v=>!v)},
+            ].map(r => (
+              <div key={r.label} className="ios-toggle-row">
+                <span className="ios-toggle-label">{r.label}</span>
+                <IOSToggle on={r.on} onClick={r.toggle}/>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Language */}
+        <div className="ios-sheet-section">
+          <div className="ios-sheet-label">Language</div>
+          <select className="ios-select" value={language} onChange={e=>setLanguage(e.target.value)}>
+            {LANGUAGES.map(l=><option key={l.value} value={l.value}>{l.label}</option>)}
+          </select>
+        </div>
+
+        {/* Voice */}
+        <div className="ios-sheet-section">
+          <div className="ios-sheet-label">AI Voice Type</div>
+          <select className="ios-select" value={voice} onChange={e=>setVoice(e.target.value)}>
+            {VOICES.map(v=><option key={v.value} value={v.value}>{v.label}</option>)}
+          </select>
+        </div>
+
+        {/* Account */}
+        <div className="ios-sheet-section">
+          <div className="ios-sheet-label">Account</div>
+          <div className="ios-sheet-group">
+            <div className="ios-sheet-row" onClick={()=>{alert("Connect to your backend!");setMenuOpen(false);}}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/>
+                <polyline points="10,17 15,12 10,7"/><line x1="15" y1="12" x2="3" y2="12"/>
+              </svg>
+              Log In / Sign Up
+              <svg className="ios-row-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+            <div className="ios-sheet-row" onClick={()=>setMenuOpen(false)}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
+              </svg>
+              Settings
+              <svg className="ios-row-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
           </div>
         </div>
       </div>
 
       {/* ── APP ── */}
-      <div className="nx-app">
+      <div className="ios-app">
 
         {/* HEADER */}
-        <header className="nx-header">
-          <div className="nx-logo">
-            <LogoIcon/>
+        <header className="ios-header">
+          <div className="ios-logo">
+            <LogoMark/>
             <div>
-              <div className="nx-logo-text">NEXUS AI</div>
-              <div className="nx-logo-sub">INTERVIEW SYSTEM v2.4</div>
+              <div className="ios-logo-name">Nexus AI</div>
+              <div className="ios-logo-sub">Interview System</div>
             </div>
           </div>
 
-          <div className="nx-hdr-center">
-            <div className="nx-status-dot"/>
-            <span>SYSTEM ONLINE</span>
+          <div className="ios-hdr-pill">
+            <div className="ios-dot"/>
+            <span>System Online</span>
           </div>
 
-          <div className="nx-hdr-right">
-            <button className="nx-btn-ghost" onClick={() => alert("Login modal — connect to Python backend!")}>LOG IN</button>
-            <button className="nx-btn-neon"  onClick={() => alert("Signup modal — connect to Python backend!")}>SIGN UP</button>
-            <button className={`nx-hamburger${menuOpen?" open":""}`} onClick={() => setMenuOpen(v => !v)}>
+          <div className="ios-hdr-right">
+            <button className="ios-btn" onClick={()=>alert("Login — connect to backend!")}>Log In</button>
+            <button className="ios-btn primary" onClick={()=>alert("Sign Up — connect to backend!")}>Sign Up</button>
+            <button className={`ios-menu-btn${menuOpen?" open":""}`} onClick={()=>setMenuOpen(v=>!v)}>
               <span/><span/><span/>
             </button>
           </div>
         </header>
 
         {/* MAIN */}
-        <div className="nx-main">
+        <div className="ios-main">
 
-          {/* ── CENTER PANEL ── */}
-          <div className="nx-center">
+          {/* CENTER */}
+          <div className="ios-center">
 
             {/* Avatar */}
-            <div className="nx-avatar-wrap">
-              <div className="nx-orbit r3"><div className="nx-orbit-dot"/></div>
-              <div className="nx-orbit r2"><div className="nx-orbit-dot"/></div>
-              <div className="nx-orbit r1"><div className="nx-orbit-dot"/></div>
+            <div className="ios-avatar-wrap">
+              <div className="ios-orbit r3"><div className="ios-orbit-dot"/></div>
+              <div className="ios-orbit r2"><div className="ios-orbit-dot"/></div>
+              <div className="ios-orbit r1"><div className="ios-orbit-dot"/></div>
 
-              {/* Pulse rings — only when talking */}
-              <div className={`nx-pulse${isTalking?" active":""}`} style={{position:"absolute"}}/>
-              <div className={`nx-pulse${isTalking?" active":""}`} style={{position:"absolute"}}/>
-              <div className={`nx-pulse${isTalking?" active":""}`} style={{position:"absolute"}}/>
+              <div className={`ios-pulse${isTalking?" active":""}`} style={{position:"absolute"}}/>
+              <div className={`ios-pulse${isTalking?" active":""}`} style={{position:"absolute"}}/>
+              <div className={`ios-pulse${isTalking?" active":""}`} style={{position:"absolute"}}/>
 
-              {/* Talking ring border */}
-              <div className={`nx-talk-ring${isTalking?" active":""}`} style={{position:"absolute"}}/>
+              <div className={`ios-talk-ring${isTalking?" active":""}`} style={{position:"absolute"}}/>
 
-              <div className={`nx-avatar-circle${isTalking?" talking":""}`} style={{position:"relative"}}>
-                <div className="nx-avatar-inner">
-                  <AIFaceSVG
-                    blink={blink}
-                    camOn={camOn}
-                    speakerOn={speakerOn}
-                    micOn={micOn}
+              <div className={`ios-avatar-glass${isTalking?" talking":""}`} style={{position:"relative"}}>
+                <div className="ios-avatar-inner">
+                  <AIFace
+                    blink={blink} camOn={camOn}
+                    speakerOn={speakerOn} micOn={micOn}
                     amplitude={isTalking ? amplitude : 0}
                   />
-                  {/* Voice bars inside face — only when active */}
                   {interviewActive && (
-                    <div className="nx-voice-vis">
-                      {voiceBars.map((h, i) => (
-                        <div key={i} className="nx-v-bar" style={{height: isTalking ? h : 4}}/>
+                    <div className="ios-voice-vis">
+                      {voiceBars.map((h,i) => (
+                        <div key={i} className="ios-v-bar" style={{height: isTalking ? h : 4}}/>
                       ))}
                     </div>
                   )}
@@ -690,147 +910,146 @@ export default function AIInterviewer() {
               </div>
             </div>
 
-            <div>
-              <div className="nx-ai-name">NEXUS — AI INTERVIEWER</div>
-              <div className="nx-ai-status" style={{color: isTalking ? "var(--neon)" : interviewActive ? "rgba(0,245,255,.6)" : "var(--muted)"}}>{aiStatus}</div>
+            {/* Name + Status */}
+            <div style={{textAlign:"center"}}>
+              <div className="ios-ai-name">Nexus — AI Interviewer</div>
+              <div className={`ios-ai-status ${statusClass}`}>{aiStatus}</div>
             </div>
 
             {/* Start Button */}
-            <button className={`nx-start-btn${interviewActive?" active":""}`} onClick={handleStartToggle}>
-              <div className="nx-start-inner">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <button className={`ios-start-btn${interviewActive?" active":""}`} onClick={handleStartToggle}>
+              <div className="ios-start-inner">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   {interviewActive
-                    ? <rect x="3" y="3" width="18" height="18" rx="2" fill="rgba(255,45,120,0.2)" stroke="#ff2d78" strokeWidth="2"/>
-                    : <polygon points="5,3 19,12 5,21" fill="rgba(0,245,255,0.2)" stroke="#00f5ff" strokeWidth="2"/>
+                    ? <rect x="4" y="4" width="16" height="16" rx="3" fill="rgba(255,69,58,0.3)" stroke="rgba(255,120,110,0.9)" strokeWidth="1.8"/>
+                    : <polygon points="5,3 19,12 5,21" fill="rgba(10,132,255,0.35)" stroke="rgba(100,180,255,0.9)" strokeWidth="1.8"/>
                   }
                 </svg>
-                <span className="nx-start-text">{interviewActive ? "END SESSION" : "INITIATE INTERVIEW"}</span>
+                <span className="ios-start-text">{interviewActive ? "End Session" : "Start Interview"}</span>
               </div>
             </button>
 
-            {/* Controls — Mic, Cam, Speaker only */}
-            <div className="nx-controls">
+            {/* Controls */}
+            <div className="ios-controls">
               {/* Mic */}
-              <div className="nx-ctrl-item">
-                <div className={`nx-ctrl-btn${!micOn?" muted":""}`} onClick={() => setMicOn(v => !v)}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    {micOn ? (
-                      <>
-                        <rect x="9" y="2" width="6" height="11" rx="3"/>
-                        <path d="M19 10a7 7 0 01-14 0"/>
-                        <line x1="12" y1="17" x2="12" y2="21"/>
-                        <line x1="8" y1="21" x2="16" y2="21"/>
-                      </>
-                    ) : (
-                      <>
-                        <line x1="1" y1="1" x2="23" y2="23" strokeLinecap="round"/>
-                        <path d="M9 9v3a3 3 0 005.12 2.12M15 9.34V4a3 3 0 00-5.94-.6"/>
-                      </>
-                    )}
+              <div className="ios-ctrl-item">
+                <div className={`ios-ctrl-btn${!micOn?" off":""}`} onClick={()=>setMicOn(v=>!v)}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                    {micOn ? <>
+                      <rect x="9" y="2" width="6" height="11" rx="3"/>
+                      <path d="M19 10a7 7 0 01-14 0"/>
+                      <line x1="12" y1="17" x2="12" y2="21"/>
+                      <line x1="8" y1="21" x2="16" y2="21"/>
+                    </> : <>
+                      <line x1="1" y1="1" x2="23" y2="23" strokeLinecap="round"/>
+                      <path d="M9 9v3a3 3 0 005.12 2.12M15 9.34V4a3 3 0 00-5.94-.6"/>
+                    </>}
                   </svg>
                 </div>
-                <div className={`nx-ctrl-label${!micOn?" muted":""}`}>{micOn ? "MIC" : "MUTED"}</div>
+                <div className={`ios-ctrl-label${!micOn?" off":""}`}>{micOn?"Mic":"Muted"}</div>
               </div>
 
               {/* Cam */}
-              <div className="nx-ctrl-item">
-                <div className={`nx-ctrl-btn${!camOn?" off":""}`} onClick={() => setCamOn(v => !v)}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    {camOn ? (
-                      <>
-                        <path d="M23 7l-7 5 7 5V7z"/>
-                        <rect x="1" y="5" width="15" height="14" rx="2"/>
-                      </>
-                    ) : (
-                      <>
-                        <line x1="1" y1="1" x2="23" y2="23" strokeLinecap="round"/>
-                        <path d="M21 21H3a2 2 0 01-2-2V8a2 2 0 012-2h3m3-3h6l2 3h4a2 2 0 012 2v9.34m-7.72-2.06A4 4 0 1111.17 8"/>
-                      </>
-                    )}
+              <div className="ios-ctrl-item">
+                <div className={`ios-ctrl-btn${!camOn?" off":""}`} onClick={()=>setCamOn(v=>!v)}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                    {camOn ? <>
+                      <path d="M23 7l-7 5 7 5V7z"/>
+                      <rect x="1" y="5" width="15" height="14" rx="2"/>
+                    </> : <>
+                      <line x1="1" y1="1" x2="23" y2="23" strokeLinecap="round"/>
+                      <path d="M21 21H3a2 2 0 01-2-2V8a2 2 0 012-2h3m3-3h6l2 3h4a2 2 0 012 2v9.34m-7.72-2.06A4 4 0 1111.17 8"/>
+                    </>}
                   </svg>
                 </div>
-                <div className={`nx-ctrl-label${!camOn?" off":""}`}>{camOn ? "CAM" : "OFF"}</div>
+                <div className={`ios-ctrl-label${!camOn?" off":""}`}>{camOn?"Camera":"Off"}</div>
               </div>
 
               {/* Speaker */}
-              <div className="nx-ctrl-item">
-                <div className={`nx-ctrl-btn${!speakerOn?" muted":""}`} onClick={() => setSpeakerOn(v => !v)}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <div className="ios-ctrl-item">
+                <div className={`ios-ctrl-btn${!speakerOn?" off":""}`} onClick={()=>setSpeakerOn(v=>!v)}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
                     <polygon points="11,5 6,9 2,9 2,15 6,15 11,19"/>
-                    {speakerOn ? (
-                      <>
-                        <path d="M15.54 8.46a5 5 0 010 7.07"/>
-                        <path d="M19.07 4.93a10 10 0 010 14.14"/>
-                      </>
-                    ) : (
-                      <>
-                        <line x1="23" y1="9" x2="17" y2="15" strokeLinecap="round"/>
-                        <line x1="17" y1="9" x2="23" y2="15" strokeLinecap="round"/>
-                      </>
-                    )}
+                    {speakerOn ? <>
+                      <path d="M15.54 8.46a5 5 0 010 7.07"/>
+                      <path d="M19.07 4.93a10 10 0 010 14.14"/>
+                    </> : <>
+                      <line x1="23" y1="9" x2="17" y2="15" strokeLinecap="round"/>
+                      <line x1="17" y1="9" x2="23" y2="15" strokeLinecap="round"/>
+                    </>}
                   </svg>
                 </div>
-                <div className={`nx-ctrl-label${!speakerOn?" muted":""}`}>{speakerOn ? "SPEAKER" : "MUTED"}</div>
+                <div className={`ios-ctrl-label${!speakerOn?" off":""}`}>{speakerOn?"Speaker":"Muted"}</div>
               </div>
             </div>
           </div>
 
-          {/* ── RIGHT PANEL ── */}
-          <div className="nx-right">
-            <div className="nx-tabs">
+          {/* RIGHT PANEL */}
+          <div className="ios-right">
+            <div className="ios-tabs">
               {["transcript","stats","info"].map(t => (
-                <div key={t} className={`nx-tab${activeTab===t?" active":""}`} onClick={() => setActiveTab(t)}>
-                  {t === "transcript" ? "TRANSCRIPT" : t === "stats" ? "ANALYTICS" : "SESSION"}
+                <div key={t} className={`ios-tab${activeTab===t?" active":""}`} onClick={()=>setActiveTab(t)}>
+                  {t==="transcript"?"Transcript":t==="stats"?"Analytics":"Session"}
                 </div>
               ))}
             </div>
 
-            <div className="nx-panel-body" ref={panelRef}>
+            <div className="ios-panel-body" ref={panelRef}>
 
-              {activeTab === "transcript" && <>
-                {transcript.map((m, i) => (
-                  <div key={i} className="nx-msg">
-                    <div className={`nx-msg-who ${m.who}`}>{m.who === "ai" ? "NEXUS AI ●" : "YOU ●"}</div>
-                    <div className={`nx-msg-text ${m.who}`}>{m.text}</div>
+              {activeTab==="transcript" && <>
+                {transcript.map((m,i) => (
+                  <div key={i} className="ios-msg">
+                    <div className={`ios-msg-who ${m.who}`}>{m.who==="ai"?"Nexus AI":"You"}</div>
+                    <div className={`ios-msg-bubble ${m.who}`}>{m.text}</div>
                   </div>
                 ))}
-                {!interviewActive && <div className="nx-divider">— {currentQ === 0 ? "WAITING FOR SESSION START" : "SESSION ENDED"} —</div>}
+                {!interviewActive && (
+                  <div className="ios-divider">
+                    {currentQ===0?"Waiting for session to start":"Session ended"}
+                  </div>
+                )}
               </>}
 
-              {activeTab === "stats" && <>
-                <div className="nx-stat-grid">
-                  <div className="nx-stat-card"><div className="nx-stat-val">{stats.conf}</div><div className="nx-stat-lab">CONFIDENCE</div></div>
-                  <div className="nx-stat-card"><div className="nx-stat-val">{stats.clar}</div><div className="nx-stat-lab">CLARITY</div></div>
-                  <div className="nx-stat-card"><div className="nx-stat-val">{stats.pace}</div><div className="nx-stat-lab">PACE</div></div>
-                  <div className="nx-stat-card"><div className="nx-stat-val">{currentQ}/{QUESTIONS.length}</div><div className="nx-stat-lab">QUESTIONS</div></div>
+              {activeTab==="stats" && <>
+                <div className="ios-stat-grid">
+                  {[
+                    {val:stats.conf, lab:"Confidence"},
+                    {val:stats.clar, lab:"Clarity"},
+                    {val:stats.pace, lab:"Pace"},
+                    {val:`${currentQ}/${QUESTIONS.length}`, lab:"Questions"},
+                  ].map(s => (
+                    <div key={s.lab} className="ios-stat-card">
+                      <div className="ios-stat-val">{s.val}</div>
+                      <div className="ios-stat-lab">{s.lab}</div>
+                    </div>
+                  ))}
                 </div>
-                <div style={{marginTop:20}}>
-                  <div style={{fontFamily:"var(--font-mono)",fontSize:10,color:"var(--muted)",letterSpacing:2,marginBottom:10}}>PERFORMANCE SCORE</div>
-                  <div className="nx-progress-bar"><div className="nx-progress-fill" style={{width: stats.perf + "%"}}/></div>
-                  <div className="nx-progress-labels"><span>0%</span><span>{stats.perf}%</span></div>
+                <div className="ios-progress-wrap">
+                  <div className="ios-progress-label">Performance Score</div>
+                  <div className="ios-progress-bar"><div className="ios-progress-fill" style={{width:stats.perf+"%"}}/></div>
+                  <div className="ios-progress-pct">{stats.perf}%</div>
                 </div>
-                <div style={{marginTop:20,fontFamily:"var(--font-mono)",fontSize:10,color:"var(--muted)",letterSpacing:2,marginBottom:10}}>KEYWORDS DETECTED</div>
-                <div className="nx-kw-wrap">
-                  {KEYWORDS.slice(0, Math.max(2, currentQ + 1)).map(k => (
-                    <div key={k} className="nx-kw">{k}</div>
+                <div className="ios-progress-label" style={{marginTop:18,marginBottom:10}}>Keywords Detected</div>
+                <div className="ios-kw-wrap">
+                  {KEYWORDS.slice(0, Math.max(2, currentQ+1)).map(k => (
+                    <div key={k} className="ios-kw">{k}</div>
                   ))}
                 </div>
               </>}
 
-              {activeTab === "info" && <>
-                <div style={{fontFamily:"var(--font-mono)",fontSize:10,color:"var(--muted)",letterSpacing:2,marginBottom:12}}>SESSION DETAILS</div>
+              {activeTab==="info" && <>
                 {[
-                  ["Session ID", "#NX-2024-0047"],
-                  ["Interview Type", "Technical"],
-                  ["Difficulty", "Advanced"],
-                  ["Language", langLabel],
-                  ["AI Voice", voiceLabel],
-                  ["Duration", sessionMinSec],
-                  ["Status", interviewActive ? "ACTIVE" : currentQ > 0 ? "ENDED" : "IDLE"],
-                ].map(([k, v]) => (
-                  <div key={k} className="nx-info-row">
-                    <span className="nx-info-key">{k}</span>
-                    <span className="nx-info-val" style={k==="Difficulty"?{color:"#fac775"}:{}}>{v}</span>
+                  ["Session ID","#NX-2024-0047"],
+                  ["Interview Type","Technical"],
+                  ["Difficulty","Advanced"],
+                  ["Language",langLabel],
+                  ["AI Voice",voiceLabel],
+                  ["Duration",sessionMinSec],
+                  ["Status", interviewActive?"Active":currentQ>0?"Ended":"Idle"],
+                ].map(([k,v]) => (
+                  <div key={k} className="ios-info-row">
+                    <span className="ios-info-key">{k}</span>
+                    <span className="ios-info-val" style={k==="Difficulty"?{color:"#ff9f0a"}:{}}>{v}</span>
                   </div>
                 ))}
               </>}
@@ -839,10 +1058,10 @@ export default function AIInterviewer() {
         </div>
 
         {/* FOOTER */}
-        <footer className="nx-footer">
-          <div className="nx-footer-info">NEXUS AI — SECURE ENCRYPTED SESSION</div>
-          <div className="nx-timer">{formatTime(seconds)}</div>
-          <div className="nx-footer-info">LANG: {language.toUpperCase()} | VOICE: {voiceLabel.split("—")[0].trim()}</div>
+        <footer className="ios-footer">
+          <div className="ios-footer-info">Nexus AI · Encrypted Session</div>
+          <div className="ios-timer">{formatTime(seconds)}</div>
+          <div className="ios-footer-info">{langLabel} · {voiceLabel.split("—")[0].trim()}</div>
         </footer>
       </div>
     </div>
