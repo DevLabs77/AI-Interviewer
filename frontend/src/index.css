@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *{
   margin:0;
   padding:0;
@@ -6,4 +7,16 @@
 
 body{
   font-family: Arial, sans-serif;
+=======
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+>>>>>>> 47f66c9bad8bb5b8db516fa0f72ef51645b09312
 }
