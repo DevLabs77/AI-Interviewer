@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
@@ -19,12 +18,6 @@ function App() {
       </Routes>
     </BrowserRouter>
   );
-=======
-import AIInterviewer from "./AIInterviewer";
-
-function App() {
-  return <AIInterviewer />;
->>>>>>> 47f66c9bad8bb5b8db516fa0f72ef51645b09312
 }
 
 export default App;
